@@ -59,7 +59,7 @@
                                     <!-- blog comments form -->
                                     <div id="respond">
                                         <h3 class="reply-title">Send Message</h3>
-                                        <form id="commentform" action="{{ route('customer.chat.send') }}" method="POST">
+                                        <form id="commentform" action="{{ route('customer.sendMessage') }}" method="POST">
                                             @csrf
                                             <p class="comment-form-author">
                                                 <input type="text" value="" size="30" name="message"
@@ -81,7 +81,7 @@
             </div>
         </div>
     </section>
-    <script>
+    {{-- <script>     
         import Echo from 'laravel-echo';
         import Pusher from 'pusher-js';
 
@@ -91,7 +91,7 @@
             broadcaster: 'pusher',
             key: 'e213caea4a6a3e34a436',
             cluster: 'ap2',
-            forceTLS: false,
+            forceTLS: false, // Ensure it's true if you're using HTTPS
         });
 
         window.Echo.private(`chat.${vendorId}`)
@@ -99,6 +99,6 @@
                 console.log(event.chat);
                 // Update your chat UI here
             });
-    </script>
+    </script> --}}
     <!-- / Blog Archive -->
 @endsection

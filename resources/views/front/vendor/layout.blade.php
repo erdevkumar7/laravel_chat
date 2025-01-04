@@ -78,7 +78,7 @@
                                                 onclick="event.preventDefault(); document.getElementById('vendor-logout-form').submit();">Logout</a>
                                         </li>
                                     @else
-                                        <li><a href="{{route('vendor.login')}}">Login</a></li>
+                                        <li><a href="{{route('vendor.login')}}">Vendor Login</a></li>
                                     @endif
                                     {{-- <li><a href="" data-toggle="modal" data-target="#login-modal">Vendor Login</a></li>   --}}
                                 </ul>

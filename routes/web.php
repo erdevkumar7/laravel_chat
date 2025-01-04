@@ -21,6 +21,7 @@ use App\Http\Controllers\VendorController;
 
 Route::get('/', [CustomerController::class, 'Home'])->name('home');
 
+
 // User Auth Functionality
 Route::prefix('customer')->group(function () {
     Route::get('/register', [AuthController::class, 'customerRegister'])->name('customer.register');
@@ -33,12 +34,15 @@ Route::prefix('customer')->group(function () {
         Route::any('/dashboard', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
 
         Route::get('/chat/send', [ChatController::class, 'getCustomerChat'])->name('customer.chat.get');
-        Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('customer.chat.send');
+        Route::post('/chat/send', [ChatController::class, 'sendCustomerMessage'])->name('customer.sendMessage');
+        // Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
 
         Route::post('/logout', [AuthController::class, 'customerLogout'])->name('customer.logout');
     });
 });
 
+// Pusher auth route (outside middleware to allow Pusher requests)
+Route::post('/pusher/auth', [ChatController::class, 'authenticatePusher'])->name('pusher.auth');
 
 Route::prefix('vendor')->group(function () {
     Route::get('/register', [AuthController::class, 'vendorRegister'])->name('vendor.register');
@@ -47,11 +51,13 @@ Route::prefix('vendor')->group(function () {
     Route::get('/login', [AuthController::class, 'vendorLogin'])->name('vendor.login');
     Route::post('/login', [AuthController::class, 'vendorLoginSubmit'])->name('vendor.loginSubmit');
 
-    Route::middleware('vendor')->group(function(){
+    Route::middleware('vendor')->group(function () {
         Route::any('/dashboard', [VendorController::class, 'dashboard'])->name('vendor.dashboard');
 
         Route::get('/chat/send/', [ChatController::class, 'getVendorChat'])->name('vendor.chat.get');
-        Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('vendor.chat.send');
+        Route::post('/chat/send', [ChatController::class, 'sendVendorMessage'])->name('vendor.sendMessage');
+
+        Route::get('/messages', [ChatController::class, 'vendorMessages'])->name('vendor.messages');
 
         Route::post('/logout', [AuthController::class, 'vendorLogout'])->name('vendor.logout');
     });

@@ -35,15 +35,12 @@ return [
             'key' => env('PUSHER_APP_KEY'),
             'secret' => env('PUSHER_APP_SECRET'),
             'app_id' => env('PUSHER_APP_ID'),
-            // 'options' => [
-            //     'cluster' => env('PUSHER_APP_CLUSTER'),
-            //     'useTLS' => false, // Ensure this is true if you're using HTTPS
-            // ],
-
             'options' => [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true  // Ensure this is true if you're using HTTPS
+                'cluster' => env('PUSHER_APP_CLUSTER', 'ap2'),
+                'useTLS' => false, // Disable TLS for local development
+                'encrypted' => false, // Optional: ensure encryption is disabled
             ],
+
         ],
 
         'redis' => [
