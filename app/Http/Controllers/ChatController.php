@@ -19,10 +19,7 @@ class ChatController extends Controller
             config('broadcasting.connections.pusher.app_id'),
             config('broadcasting.connections.pusher.options')
         );
-        // Generate the authentication payload
-        // return response()->json(
-        //     $pusher->socket_auth($request->channel_name, $request->socket_id)
-        // );
+        // Generate the authentication payload  
 
         return response()->json(
             json_decode($pusher->socket_auth($request->channel_name, $request->socket_id), true)

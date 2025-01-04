@@ -9,10 +9,10 @@
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
-        var pusher = new Pusher('e213caea4a6a3e34a436', {
-            forceTLS: true,
+        var pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
             authEndpoint: '/projecthub/pusher/auth', // Specify the custom
-            cluster: 'ap2',
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+            forceTLS: true,
             auth: {
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}', // Include CSRF token for security
@@ -20,10 +20,16 @@
             },
         });
 
-        const channel = pusher.subscribe('private-chat.{{ $vendor->id }}'); 
-        console.log('chaneelll', channel)   
-        channel.bind('ChatMessageSent', function(data) {
-            alert(JSON.stringify(data));
+        const channel = pusher.subscribe('private-chat.{{ $vendor->id }}');
+        // Handle subscription success
+        channel.bind('pusher:subscription_succeeded', () => {
+            console.log('Successfully subscribed to private-chat.{{ $vendor->id }}');
+        });
+     
+        channel.bind('App\\Events\\ChatMessageSent', function(data) {
+            console.log('Message received:', data);      
+            const message = `<li><strong>User ${data.user_id}:</strong> ${data.message}</li>`;
+            document.querySelector('#messages').innerHTML += message;
         });
     </script>
 @endpush
