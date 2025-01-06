@@ -67,30 +67,7 @@
                                 <div class="aa-blog-content aa-blog-details">
                                     <div class="aa-blog-comment-threat">
                                         <h3>Messages </h3>
-                                        <div class="comments">
-                                            {{-- <ul class="commentlist">
-                                                <li>
-                                                    @foreach ($messages as $message)
-                                                        <div>
-                                                            <div class="media">
-                                                                <div class="media-left">
-                                                                    <img class="media-object news-img"
-                                                                        src="{{ asset('public/front_asset/img/testimonial-img-3.jpg') }}"
-                                                                        alt="img">
-                                                                </div>
-                                                                <div class="media-body">
-                                                                    <h4 class="author-name">
-                                                                        {{ Auth::guard('web')->user()->id ? 'You' : 'No Name' }}
-                                                                    </h4>
-                                                                    <span class="comments-date">
-                                                                        {{ $message->created_at }}</span>
-                                                                    <p>{{ $message->message }}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        @endforeach
-                                                    </li>
-                                            </ul> --}}
+                                        <div class="comments">                                         
                                             <ul class="commentlist" id="messages">
                                                 @foreach ($messages as $message)
                                                     <li>
@@ -106,7 +83,7 @@
                                     <!-- blog comments form -->
                                     <div id="respond">
                                         <h3 class="reply-title">Send Message</h3>
-                                        <form id="commentform" action="{{ route('customer.sendMessage', $vendor->id) }}"
+                                        <form id="commentform" action="{{ route('customer.sendMessage') }}"
                                             method="POST">
                                             @csrf
                                             <p class="comment-form-author">

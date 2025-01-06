@@ -47,7 +47,7 @@ class ChatMessageSent implements ShouldBroadcast
             'user_id' => $this->chat['user_id'],
             'vendor_id' => $this->chat['vendor_id'],
             'message' => $this->chat['message'],
-            'created_at' => $this->chat->created_at->toDateTimeString(),
+            'created_at' => $this->chat['created_at'],
         ];
     }
 }

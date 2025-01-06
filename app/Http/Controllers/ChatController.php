@@ -35,7 +35,7 @@ class ChatController extends Controller
         return view('front.vendor.all_chat_vendor', compact('vendors'));
     }
 
-
+// Customer Chat Functionality *********************************************************************
     public function getCustomerChat($vendor_id)
     {
         $vendor = Vendor::find($vendor_id);
@@ -79,17 +79,7 @@ class ChatController extends Controller
     }
 
     public function sendVendorMessage(Request $request)
-    {
-        // $chat = Chat::create([
-        //     'user_id' => 1,
-        //     'vendor_id' => Auth::guard('vendor')->user()->id,
-        //     'message' => $request->message,
-        // ]);
-
-        // broadcast(new ChatMessageSent($chat))->toOthers();
-
-        // return $chat;
-
+    {    
         $chat = Chat::create([
             'user_id' => $request->user_id,
             'vendor_id' => Auth::guard('vendor')->user()->id,
@@ -103,26 +93,4 @@ class ChatController extends Controller
 
 
 
-
-    // public function fetchMessages()
-    // {        
-    //     return Chat::where('vendor_id', Auth::guard('vendor')->user()->id)
-    //         ->orWhere('user_id', 1)
-    //         ->with('user', 'vendor')
-    //         ->orderBy('created_at', 'asc')
-    //         ->get();
-    // }
-
-    // public function sendMessage(Request $request)
-    // {
-    //     $chat = Chat::create([
-    //         'user_id' => Auth::id(),
-    //         'vendor_id' => 3,
-    //         'message' => $request->message,
-    //     ]);
-
-    //     broadcast(new ChatMessageSent($chat))->toOthers();
-
-    //     return $chat;
-    // }
 }
