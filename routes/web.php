@@ -23,22 +23,19 @@ Route::get('/', [CustomerController::class, 'Home'])->name('home');
 
 // User Chat
 Route::middleware('user')->group(function () {
-    Route::get('/chat/allvendor', [VendorController::class, 'getAllVendorForChat'])->name('chat.getAllVendor');
+    Route::get('/chat/allvendor', [ChatController::class, 'getAllVendorForChat'])->name('chat.getAllVendor');
+  
+    Route::get('/chat/{vendor_id}/send', [ChatController::class, 'getCustomerChat'])->name('customer.chat.get');
+    Route::post('/chat/send', [ChatController::class, 'sendCustomerMessage'])->name('customer.sendMessage');   
 
-    Route::get('/chat/{vendor_id}/view', [ChatController::class, 'viewCustomerChat'])->name('customer.chat.view');
-    Route::post('/chat/send', [ChatController::class, 'sendCustomerMessage'])->name('customer.sendMessage');
-   
-    Route::get('/chat/send', [ChatController::class, 'getCustomerChat'])->name('customer.chat.get');
-    // Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
 });
 
 // Vendor Chat
 Route::prefix('vendor')->group(function(){
     Route::middleware('vendor')->group(function () {
-        Route::get('/chat/send/', [ChatController::class, 'getVendorChat'])->name('vendor.chat.get');
+        Route::get('/chat/{user_id}/send/', [ChatController::class, 'getVendorChat'])->name('vendor.chat.get');
         Route::post('/chat/send', [ChatController::class, 'sendVendorMessage'])->name('vendor.sendMessage');
 
-        Route::get('/messages', [ChatController::class, 'vendorMessages'])->name('vendor.messages');
     });
 });
 

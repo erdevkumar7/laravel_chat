@@ -12,9 +12,5 @@ class VendorController extends Controller
         return view('front.vendor.dashboard');
     }
 
-    public function getAllVendorForChat()
-    {
-        $vendors = Vendor::all();
-        return view('front.vendor.all_chat_vendor', compact('vendors'));
-    }
+
 }

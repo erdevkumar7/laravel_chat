@@ -27,9 +27,14 @@
         });
      
         channel.bind('App\\Events\\ChatMessageSent', function(data) {
-            console.log('Message received:', data);      
-            const message = `<li><strong>User ${data.user_id}:</strong> ${data.message}</li>`;
+            console.log('Message received:', data);
+            const message = `
+            <li>
+                <strong>${data.user_id == {{ Auth::guard('vendor')->user()->id }} ? 'You' : 'User'}:</strong> ${data.message}
+                <span class="text-muted small">${data.created_at}</span>
+            </li>`;
             document.querySelector('#messages').innerHTML += message;
+          
         });
     </script>
 @endpush
@@ -66,8 +71,7 @@
                                     <div class="aa-blog-comment-threat">
                                         <h3>Messages </h3>
                                         <div class="comments">
-                                            <ul class="commentlist" >
-                                                {{-- <li>ddddddd</li> --}}
+                                            {{-- <ul class="commentlist" >
                                                 <li>
                                                     <div class="media">
                                                         <div class="media-left">
@@ -81,8 +85,17 @@
                                                             <p id="messages"></p>
                                                         </div>
                                                     </div>
-
                                                 </li>
+                                            </ul> --}}
+
+                                            <ul class="commentlist" id="messages">
+                                                @foreach ($messages as $message)
+                                                    <li>
+                                                        <strong>{{ $message->user_id == Auth::guard('vendor')->user()->id ? 'You' : 'User' }}:</strong>
+                                                        {{ $message->message }}
+                                                        <span class="text-muted small">{{ $message->created_at }}</span>
+                                                    </li>
+                                                @endforeach
                                             </ul>
                                         </div>
                                     </div>
@@ -93,7 +106,7 @@
                                         <form id="commentform" action="{{ route('vendor.sendMessage') }}" method="POST">
                                             @csrf
                                             <p class="comment-form-author">
-                                                <input type="text" value="" size="30" name="message"
+                                                <input type="text" value="" size="30" name="message" id="messageInput"
                                                     required="required">
                                             </p>
 
@@ -112,48 +125,36 @@
             </div>
         </div>
     </section>
-    {{-- <script>
-        import Echo from 'laravel-echo';
-        import Pusher from 'pusher-js';
-      
-      
-        window.Pusher = Pusher;
 
-        window.Echo = new Echo({
-            broadcaster: 'pusher',
-            key: 'e213caea4a6a3e34a436',
-            cluster: 'ap2',
-            forceTLS: false, // Ensure it's true if you're using HTTPS
+
+    <script>
+        document.querySelector('#commentform').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const message = document.querySelector('#messageInput').value;
+            const userId = {{ $user->id }};
+
+            fetch('{{ route('vendor.sendMessage') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        message,
+                        user_id: userId
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelector('#messageInput').value = '';
+                        console.log('Message sent successfully:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
-
-        window.Echo.private(`chat.${vendorId}`)
-            .listen('ChatMessageSent', (event) => {
-                console.log(event.chat);
-                // Update your chat UI here
-            });
-    </script> --}}
-
-
-    {{-- <script>
-        // Initialize Pusher
-        Pusher.logToConsole = true; // Optional: log messages for debugging
-
-        const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
-            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
-            forceTLS: true
-        });
-        // Subscribe to the vendor's private channel
-        const channel = pusher.subscribe('private-chat.{{ $vendor->id }}');
-        console.log('channel', channel)
-
-        // Listen for a new message event
-        channel.bind('ChatMessageSent', function(data) {
-            console.log('data', data)
-            // Append the new message to the messages list
-            const message = `<li><strong>${data.sender}:</strong> ${data.message}</li>`;
-            $('#messages').append(message);
-        });
-    </script> --}}
+    </script>
 
 
 
