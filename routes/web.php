@@ -21,8 +21,25 @@ use App\Http\Controllers\VendorController;
 
 Route::get('/', [CustomerController::class, 'Home'])->name('home');
 
+// User Chat
 Route::middleware('user')->group(function () {
     Route::get('/chat/allvendor', [VendorController::class, 'getAllVendorForChat'])->name('chat.getAllVendor');
+
+    Route::get('/chat/{vendor_id}/view', [ChatController::class, 'viewCustomerChat'])->name('customer.chat.view');
+    Route::post('/chat/send', [ChatController::class, 'sendCustomerMessage'])->name('customer.sendMessage');
+   
+    Route::get('/chat/send', [ChatController::class, 'getCustomerChat'])->name('customer.chat.get');
+    // Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+});
+
+// Vendor Chat
+Route::prefix('vendor')->group(function(){
+    Route::middleware('vendor')->group(function () {
+        Route::get('/chat/send/', [ChatController::class, 'getVendorChat'])->name('vendor.chat.get');
+        Route::post('/chat/send', [ChatController::class, 'sendVendorMessage'])->name('vendor.sendMessage');
+
+        Route::get('/messages', [ChatController::class, 'vendorMessages'])->name('vendor.messages');
+    });
 });
 
 // User Auth Functionality
@@ -36,9 +53,7 @@ Route::prefix('customer')->group(function () {
     Route::middleware('user')->group(function () {
         Route::any('/dashboard', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
 
-        Route::get('/chat/send', [ChatController::class, 'getCustomerChat'])->name('customer.chat.get');
-        Route::post('/chat/send', [ChatController::class, 'sendCustomerMessage'])->name('customer.sendMessage');
-        // Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+       
 
         Route::post('/logout', [AuthController::class, 'customerLogout'])->name('customer.logout');
     });
@@ -57,10 +72,7 @@ Route::prefix('vendor')->group(function () {
     Route::middleware('vendor')->group(function () {
         Route::any('/dashboard', [VendorController::class, 'dashboard'])->name('vendor.dashboard');
 
-        Route::get('/chat/send/', [ChatController::class, 'getVendorChat'])->name('vendor.chat.get');
-        Route::post('/chat/send', [ChatController::class, 'sendVendorMessage'])->name('vendor.sendMessage');
-
-        Route::get('/messages', [ChatController::class, 'vendorMessages'])->name('vendor.messages');
+   
 
         Route::post('/logout', [AuthController::class, 'vendorLogout'])->name('vendor.logout');
     });

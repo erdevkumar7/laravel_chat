@@ -66,9 +66,9 @@
                                     <div class="aa-blog-comment-threat">
                                         <h3>Messages </h3>
                                         <div class="comments">
-                                            <ul class="commentlist" id="messages">
-                                                <li>ddddddd</li>
-                                                {{-- <li>
+                                            <ul class="commentlist" >
+                                                {{-- <li>ddddddd</li> --}}
+                                                <li>
                                                     <div class="media">
                                                         <div class="media-left">
                                                             <img class="media-object news-img"
@@ -78,11 +78,11 @@
                                                         <div class="media-body">
                                                             <h4 class="author-name">Charlie Balley</h4>
                                                             <span class="comments-date"> March 26th 2016</span>
-                                                            <p>lorem message</p>
+                                                            <p id="messages"></p>
                                                         </div>
                                                     </div>
 
-                                                </li> --}}
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>

@@ -44,7 +44,7 @@
                                                                 <p>Lorem Ipsum is that it has a more-or-less normal
                                                                     distribution
                                                                     of letters, as opposed to using 'Content here, content</p>
-                                                                <a href="#" class="reply-btn">Chat</a>
+                                                                <a href="{{route('customer.chat.view', $item->id)}}" class="reply-btn">Chat</a>
                                                             </div>
                                                         </div>
                                                     </li>

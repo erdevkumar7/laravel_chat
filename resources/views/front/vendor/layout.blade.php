@@ -62,7 +62,7 @@
                             <div class="aa-header-top-left"> 
                                 <!-- start cellphone -->
                                 <div class="cellphone hidden-xs">
-                                    <p><span class="fa fa-phone"></span>00-62-658-658</p>
+                                    <p><span class="fa fa-phone"></span>00-62-658-658 || {{Auth::guard('vendor')->user()->name ?? ""}}</p>
                                 </div>
                                 <!-- / cellphone -->
                             </div>

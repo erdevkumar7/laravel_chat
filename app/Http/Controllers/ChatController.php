@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Chat;
 use App\Events\ChatMessageSent;
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Auth;
 use Pusher\Pusher;
 
@@ -27,18 +28,54 @@ class ChatController extends Controller
         return response()->json(['error' => 'Unauthorized'], 403);
     }
 
-    public function sendCustomerMessage(Request $request)
+    public function viewCustomerChat($vendor_id)
     {
-        $chat = Chat::create([
-            'user_id' => Auth::guard('web')->user()->id,
-            'vendor_id' => 3,
-            'message' => $request->message,
-        ]);
+        $vendor = Vendor::find($vendor_id);
 
-        broadcast(new ChatMessageSent($chat))->toOthers();
-        return $chat;
+        if (!$vendor) {
+            return redirect()->back()->with('error', 'Vendor not found.');
+        }
+        $messages = Chat::where('user_id', Auth::guard('web')->user()->id)
+            ->where('vendor_id', $vendor_id)
+            ->get();
+
+        return view('front.customer.chat_view', compact('messages', 'vendor'));
     }
 
+    public function sendCustomerMessage(Request $request)
+    {     
+        // $vendor = Vendor::find($vendor_id);
+
+        // if (!$vendor) {
+        //     return redirect()->back()->with('error', 'Vendor not found.');
+        // }   
+        // $chat = Chat::create([
+        //     'user_id' => Auth::guard('web')->user()->id,
+        //     'vendor_id' => $vendor_id,
+        //     'message' => $request->message,
+        // ]);
+
+        // broadcast(new ChatMessageSent($chat))->toOthers();
+        // return $chat;
+
+        $chat = Chat::create([
+            'user_id' => Auth::guard('web')->user()->id,
+            'vendor_id' => $request->vendor_id,
+            'message' => $request->message,
+        ]);
+    
+        broadcast(new ChatMessageSent($chat))->toOthers();
+    
+        return response()->json(['success' => true, 'message' => $chat]);
+    }
+
+    public function getCustomerChat()
+    {
+        $messages = Chat::where('user_id', Auth::guard('web')->user()->id)->get();
+        return view('front.customer.chat', compact('messages'));
+    }
+
+    // Vendor Chat Functionality
     public function sendVendorMessage(Request $request)
     {
         $chat = Chat::create([
@@ -52,11 +89,6 @@ class ChatController extends Controller
         return $chat;
     }
 
-    public function getCustomerChat()
-    {
-        $messages = Chat::where('user_id', Auth::guard('web')->user()->id)->get();
-        return view('front.customer.chat', compact('messages'));
-    }
 
     public function getVendorChat()
     {
