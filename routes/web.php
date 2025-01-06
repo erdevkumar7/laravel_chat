@@ -21,6 +21,9 @@ use App\Http\Controllers\VendorController;
 
 Route::get('/', [CustomerController::class, 'Home'])->name('home');
 
+Route::middleware('user')->group(function () {
+    Route::get('/chat/allvendor', [VendorController::class, 'getAllVendorForChat'])->name('chat.getAllVendor');
+});
 
 // User Auth Functionality
 Route::prefix('customer')->group(function () {

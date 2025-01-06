@@ -62,13 +62,13 @@
                             <div class="aa-header-top-left"> 
                                 <!-- start cellphone -->
                                 <div class="cellphone hidden-xs">
-                                    <p><span class="fa fa-phone"></span>00-62-658-658</p>
+                                    <p><span class="fa fa-phone"></span>00-62-658-658  || {{Auth::guard('web')->user()->name ?? ""}} </p>
                                 </div>
                                 <!-- / cellphone -->
                             </div>
                             <!-- / header top left -->
                             <div class="aa-header-top-right">
-                                <ul class="aa-head-top-nav-right">
+                                <ul class="aa-head-top-nav-right">                                
                                     @if (Auth::guard('web')->check())
                                         <form action="{{ route('customer.logout') }}" method="POST"
                                             id="customer-logout-form" style="display: none">

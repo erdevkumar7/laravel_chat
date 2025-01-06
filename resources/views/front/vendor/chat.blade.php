@@ -9,9 +9,9 @@
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
-        var pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+        var pusher = new Pusher('e213caea4a6a3e34a436', {
             authEndpoint: '/projecthub/pusher/auth', // Specify the custom
-            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+            cluster: 'ap2',
             forceTLS: true,
             auth: {
                 headers: {
