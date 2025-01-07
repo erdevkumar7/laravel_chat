@@ -35,26 +35,35 @@ class ChatController extends Controller
         return view('front.vendor.all_chat_vendor', compact('vendors'));
     }
 
-// Customer Chat Functionality *********************************************************************
+    // Customer Chat Functionality *********************************************************************
+    private function generateCommonChatId($userId, $vendorId)
+    {     
+        return $userId . '-' . $vendorId;
+    }
+
     public function getCustomerChat($vendor_id)
     {
         $vendor = Vendor::find($vendor_id);
         if (!$vendor) {
             return redirect()->back()->with('error', 'Vendor not found.');
         }
-
+        $common_chat_id = $this->generateCommonChatId(Auth::guard('web')->user()->id, $vendor_id);
+        // dd($common_chat_id);
         $messages = Chat::where('user_id', Auth::guard('web')->user()->id)
             ->where('vendor_id', $vendor_id)
             ->get();
 
-        return view('front.customer.chat', compact('messages', 'vendor'));
+        return view('front.customer.chat', compact('messages', 'vendor', 'common_chat_id'));
     }
+
+   
 
     public function sendCustomerMessage(Request $request)
     {
         $chat = Chat::create([
             'user_id' => Auth::guard('web')->user()->id,
             'vendor_id' => $request->vendor_id,
+            'common_chat_id' => $this->generateCommonChatId(Auth::guard('web')->user()->id, $request->vendor_id),
             'message' => $request->message,
         ]);
 
@@ -70,19 +79,21 @@ class ChatController extends Controller
         if (!$user) {
             return redirect()->back()->with('error', 'User not found!');
         }
-
-        $vendor = auth('vendor')->user();       
+        $vendor = auth('vendor')->user();
+        $common_chat_id = $this->generateCommonChatId($user_id, $vendor->id);
+        // dd($common_chat_id);
         $messages = Chat::where('user_id', $user_id)
             ->where('vendor_id', $vendor->id)->get();
-      
-        return view('front.vendor.chat', compact('messages', 'vendor', 'user'));
+
+        return view('front.vendor.chat', compact('messages', 'vendor', 'user', 'common_chat_id'));
     }
 
     public function sendVendorMessage(Request $request)
-    {    
+    {
         $chat = Chat::create([
             'user_id' => $request->user_id,
             'vendor_id' => Auth::guard('vendor')->user()->id,
+            'common_chat_id' => $this->generateCommonChatId($request->user_id, Auth::guard('vendor')->user()->id),
             'message' => $request->message,
         ]);
 
@@ -90,7 +101,4 @@ class ChatController extends Controller
 
         return response()->json(['success' => true, 'message' => $chat]);
     }
-
-
-
 }

@@ -20,10 +20,10 @@
             },
         });
 
-        const channel = pusher.subscribe('private-chat.{{ $vendor->id }}');
+        const channel = pusher.subscribe('private-chat.{{ $common_chat_id }}');
         // Handle subscription success
         channel.bind('pusher:subscription_succeeded', () => {
-            console.log('Successfully subscribed to private-chat.{{ $vendor->id }}');
+            console.log('Successfully subscribed to private-chat.{{ $common_chat_id }}');
         });
      
         channel.bind('App\\Events\\ChatMessageSent', function(data) {

@@ -36,8 +36,8 @@ class ChatMessageSent implements ShouldBroadcast
     public function broadcastOn()
     {
         // \Log::info('Broadcasting on channel:', ['channel' => 'chat.' . $this->chat->vendor_id]);
-        // \Log::info('Broadcasting message:', ['message' => $this->chat]);
-        return new PrivateChannel('chat.' . $this->chat->vendor_id);
+        // \Log::info('Broadcasting message:', ['message' => $this->chat]);        
+        return new PrivateChannel('chat.' . $this->chat->common_chat_id);
     }
 
     public function broadcastWith()
@@ -46,6 +46,7 @@ class ChatMessageSent implements ShouldBroadcast
             'id' => $this->chat['id'],
             'user_id' => $this->chat['user_id'],
             'vendor_id' => $this->chat['vendor_id'],
+            'common_chat_id' => $this->chat['common_chat_id'],
             'message' => $this->chat['message'],
             'created_at' => $this->chat['created_at'],
         ];
