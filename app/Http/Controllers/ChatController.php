@@ -64,6 +64,7 @@ class ChatController extends Controller
             'user_id' => Auth::guard('web')->user()->id,
             'vendor_id' => $request->vendor_id,
             'common_chat_id' => $this->generateCommonChatId(Auth::guard('web')->user()->id, $request->vendor_id),
+            'sender_id' => Auth::guard('web')->user()->id,
             'message' => $request->message,
         ]);
 
@@ -94,6 +95,7 @@ class ChatController extends Controller
             'user_id' => $request->user_id,
             'vendor_id' => Auth::guard('vendor')->user()->id,
             'common_chat_id' => $this->generateCommonChatId($request->user_id, Auth::guard('vendor')->user()->id),
+            'sender_id' => Auth::guard('vendor')->user()->id,
             'message' => $request->message,
         ]);
 

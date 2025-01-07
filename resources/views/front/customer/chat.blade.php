@@ -27,11 +27,33 @@
 
         channel.bind('App\\Events\\ChatMessageSent', function(data) {
             console.log('Message received:', data);
+
+            const userId = {{ Auth::guard('web')->user()->id }}; // Pass the authenticated user's ID from Blade
+            const vendorProfilePic =
+                "{{ asset('public/front_asset/img/vendor_profile/' . ($vendor->profile_pic ?? 'default.png')) }}";
+            const customerProfilePic =
+                "{{ asset('public/front_asset/img/customer_profile/' . (Auth::guard('web')->user()->profile_pic ?? 'default.png')) }}";
+            const messageSender = data.sender_id == userId ? 'You' : 'Vendor';
+            const profilePic = data.sender_id == userId ? customerProfilePic : vendorProfilePic;
+            // const message = `
+            //  <p> 
+            //    <strong>${data.sender_id == {{ Auth::guard('web')->user()->id }} ? 'You' : 'Vendor'}:</strong> ${data.message}
+            //    <span class="text-muted small">${data.created_at}</span>
+            //  </p>`;
+
             const message = `
-            <li>
-                <strong>${data.user_id == {{ Auth::guard('web')->user()->id }} ? 'You' : 'Vendor'}:</strong> ${data.message}
-                <span class="text-muted small">${data.created_at}</span>
-            </li>`;
+        <li> 
+           <div class="media">
+            <div class="media-left">
+                <img class="media-object news-img" src="${profilePic}" alt="img">
+            </div>
+            <div class="media-body">
+                <h4 class="author-name">${messageSender}</h4>
+                <span class="comments-date">${data.created_at}</span>
+                <p>${data.message}</p>
+            </div>
+        </div>
+        </li>`;
             document.querySelector('#messages').innerHTML += message;
         });
     </script>
@@ -67,24 +89,54 @@
                                 <div class="aa-blog-content aa-blog-details">
                                     <div class="aa-blog-comment-threat">
                                         <h3>Messages </h3>
-                                        <div class="comments">                                         
+                                        <div class="comments">
                                             <ul class="commentlist" id="messages">
                                                 @foreach ($messages as $message)
                                                     <li>
-                                                        <strong>{{ $message->user_id == Auth::guard('web')->user()->id ? 'You' : 'Vendor' }}:</strong>
-                                                        {{ $message->message }}
-                                                        <span class="text-muted small">{{ $message->created_at }}</span>
+                                                        <div class="media">
+                                                            <div class="media-left">
+                                                                @if ($message->sender_id == Auth::guard('web')->user()->id)
+                                                                    <img class="media-object news-img"
+                                                                        src="{{ asset('public/front_asset/img/customer_profile/' . (Auth::guard('web')->user()->profile_pic ?? 'default.png')) }}"
+                                                                        alt="img">
+                                                                @else
+                                                                    <img class="media-object news-img"
+                                                                        src="{{ asset('public/front_asset/img/vendor_profile/' . ($vendor->profile_pic ?? 'default.png')) }}"
+                                                                        alt="img">
+                                                                @endif
+
+                                                            </div>
+                                                            <div class="media-body">
+                                                                <h4 class="author-name">
+                                                                    {{ $message->sender_id == Auth::guard('web')->user()->id ? 'You' : 'Vendor' }}
+                                                                </h4>
+                                                                <span class="comments-date">
+                                                                    {{ $message->created_at }}</span>
+                                                                <p>{{ $message->message }}</p>
+                                                            </div>
+                                                        </div>
                                                     </li>
                                                 @endforeach
                                             </ul>
+                                            {{-- <ul class="commentlist">
+                                                <li id="messages">
+                                                    @foreach ($messages as $message)
+                                                        <p>
+                                                            <strong>{{ $message->sender_id == Auth::guard('web')->user()->id ? 'You' : 'Vendor' }}:</strong>
+                                                            {{ $message->message }}
+                                                            <span
+                                                                class="text-muted small">{{ $message->created_at }}</span>
+                                                        </p>
+                                                    @endforeach
+                                                </li>
+                                            </ul> --}}
                                         </div>
                                     </div>
 
                                     <!-- blog comments form -->
                                     <div id="respond">
                                         <h3 class="reply-title">Send Message</h3>
-                                        <form id="commentform" action="{{ route('customer.sendMessage') }}"
-                                            method="POST">
+                                        <form id="commentform" action="{{ route('customer.sendMessage') }}" method="POST">
                                             @csrf
                                             <p class="comment-form-author">
                                                 <input type="text" value="" size="30" name="message"

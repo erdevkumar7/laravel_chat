@@ -25,16 +25,16 @@
         channel.bind('pusher:subscription_succeeded', () => {
             console.log('Successfully subscribed to private-chat.{{ $common_chat_id }}');
         });
-     
+
         channel.bind('App\\Events\\ChatMessageSent', function(data) {
             console.log('Message received:', data);
             const message = `
-            <li>
-                <strong>${data.user_id == {{ Auth::guard('vendor')->user()->id }} ? 'You' : 'User'}:</strong> ${data.message}
+            <p>
+                <strong>${data.sender_id == {{ Auth::guard('vendor')->user()->id }} ? 'You' : 'User'}:</strong> ${data.message}
                 <span class="text-muted small">${data.created_at}</span>
-            </li>`;
+            </p>`;
             document.querySelector('#messages').innerHTML += message;
-          
+
         });
     </script>
 @endpush
@@ -88,14 +88,16 @@
                                                 </li>
                                             </ul> --}}
 
-                                            <ul class="commentlist" id="messages">
-                                                @foreach ($messages as $message)
-                                                    <li>
-                                                        <strong>{{ $message->user_id == Auth::guard('vendor')->user()->id ? 'You' : 'User' }}:</strong>
-                                                        {{ $message->message }}
-                                                        <span class="text-muted small">{{ $message->created_at }}</span>
-                                                    </li>
-                                                @endforeach
+                                            <ul class="commentlist">
+                                                <li id="messages">
+                                                    @foreach ($messages as $message)
+                                                        <p>
+                                                            <strong>{{ $message->sender_id == Auth::guard('vendor')->user()->id ? 'You' : 'User' }}:</strong>
+                                                            {{ $message->message }}
+                                                            <span class="text-muted small">{{ $message->created_at }}</span>
+                                                        </p>
+                                                    @endforeach
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -106,8 +108,8 @@
                                         <form id="commentform" action="{{ route('vendor.sendMessage') }}" method="POST">
                                             @csrf
                                             <p class="comment-form-author">
-                                                <input type="text" value="" size="30" name="message" id="messageInput"
-                                                    required="required">
+                                                <input type="text" value="" size="30" name="message"
+                                                    id="messageInput" required="required">
                                             </p>
 
                                             <p class="form-submit">
