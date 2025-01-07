@@ -128,7 +128,9 @@
         </div>
     </section>
 
-
+    <!-- / Blog Archive -->
+@endsection
+@push('js')
     <script>
         document.querySelector('#commentform').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -157,10 +159,4 @@
                 .catch(error => console.error('Error:', error));
         });
     </script>
-
-
-
-    <!-- / Blog Archive -->
-@endsection
-@push('js')
 @endpush

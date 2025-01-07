@@ -36,10 +36,10 @@
             const messageSender = data.sender_id == userId ? 'You' : 'Vendor';
             const profilePic = data.sender_id == userId ? customerProfilePic : vendorProfilePic;
             // const message = `
-            //  <p> 
-            //    <strong>${data.sender_id == {{ Auth::guard('web')->user()->id }} ? 'You' : 'Vendor'}:</strong> ${data.message}
-            //    <span class="text-muted small">${data.created_at}</span>
-            //  </p>`;
+        //  <p> 
+        //    <strong>${data.sender_id == {{ Auth::guard('web')->user()->id }} ? 'You' : 'Vendor'}:</strong> ${data.message}
+        //    <span class="text-muted small">${data.created_at}</span>
+        //  </p>`;
 
             const message = `
         <li> 
@@ -158,6 +158,10 @@
             </div>
         </div>
     </section>
+
+@endsection
+
+@push('js')
     <script>
         document.querySelector('#commentform').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -186,5 +190,4 @@
                 .catch(error => console.error('Error:', error));
         });
     </script>
-
-@endsection
+@endpush
