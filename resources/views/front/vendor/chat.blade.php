@@ -7,8 +7,18 @@
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script>
         // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
+        
+        if ('Notification' in window && Notification.permission !== 'granted') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    console.log('Notification permission granted.');
+                } else {
+                    console.log('Notification permission denied.');
+                }
+            });
+        }
 
+        Pusher.logToConsole = true;
         var pusher = new Pusher('e213caea4a6a3e34a436', {
             authEndpoint: '/projecthub/pusher/auth', // Specify the custom
             cluster: 'ap2',
@@ -28,6 +38,15 @@
 
         channel.bind('App\\Events\\ChatMessageSent', function(data) {
             console.log('Message received:', data);
+            // Display a real-time push notification (e.g., with a library or browser notifications API)
+            if (Notification.permission === 'granted') {
+                new Notification('New Message', {
+                    body: data.message,
+                    icon: '/projecthub/public/front_asset/img/logo.jpg', // Optional: Add an icon URL
+                });
+            } else {
+                alert(`New message from User: ${data.message}`);
+            }
             const message = `
             <p>
                 <strong>${data.sender_id == {{ Auth::guard('vendor')->user()->id }} ? 'You' : 'User'}:</strong> ${data.message}
