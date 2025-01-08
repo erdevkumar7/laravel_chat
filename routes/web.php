@@ -7,6 +7,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,7 +76,7 @@ Route::prefix('vendor')->group(function () {
     });
 });
 
-// Admin Auth Functionality
+// Admin Functionality
 Route::prefix('admin')->group(function () {
     Route::get('/register', [AuthController::class, 'adminRegister'])->name('admin.register');
     Route::post('/register', [AuthController::class, 'adminRegisterSubmit'])->name('admin.registerSubmit');
@@ -89,5 +90,12 @@ Route::prefix('admin')->group(function () {
         Route::any('/users', [AdminController::class, 'allUsers'])->name('admin.allUsers');
 
         Route::post('/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
+    });
+    
+    Route::prefix('product')->group(function(){
+        Route::middleware('admin')->group(function(){
+            Route::any('/addCategory/{id?}', [ProductController::class, 'adminAddCategory'])->name('admin.addCategory');
+        });
+
     });
 });

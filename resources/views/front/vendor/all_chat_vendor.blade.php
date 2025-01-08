@@ -37,7 +37,7 @@
                                                         <div class="media">
                                                             <div class="media-left">
                                                                 <img class="media-object news-img"
-                                                                    src="{{asset('public/front_asset/img/vendor_profile/'.$item->profile_pic)}}" alt="img">
+                                                                    src="{{asset('public/front_asset/img/vendor_profile/'.($item->profile_pic ?? 'default.png'))}}" alt="img">
                                                             </div>
                                                             <div class="media-body">
                                                                 <h4 class="author-name">{{$item->name}}</h4>

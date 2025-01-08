@@ -10,7 +10,7 @@
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>@yield('title')</title>
+    <title>Admin | @yield('title')</title>
 
     <!-- Fontfaces CSS-->
     <link href="{{ asset('public/admin_asset/css/font-face.css') }}" rel="stylesheet" media="all">
@@ -92,6 +92,19 @@
                             <a href="{{ route('admin.allUsers') }}">
                                 <i class="fa fa-users"></i>Users
                             </a>
+                        </li>
+                        <li class="has-sub">
+                            <a class="js-arrow" href="#">
+                                <i class="fas fa-copy"></i>Products</a>
+                            <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
+                                <li>
+                                    <a href="{{route('admin.addCategory')}}">Category</a>
+                                </li>
+                                <li>
+                                    <a href="#">Setting</a>
+                                </li>
+                                
+                            </ul>
                         </li>
                     </ul>
                 </nav>
@@ -181,6 +194,14 @@
     {{-- <script src="{{asset('public/admin_asset/vendor/select2/select2.min.js')}}"></script> --}}
     <!-- Main JS-->
     <script src="{{ asset('public/admin_asset/js/main.js') }}"></script>
+    <script>
+        function removeError(id) {
+            var errElement = document.getElementById(id);
+            if (errElement) {
+                errElement.style.display = 'none'
+            }
+        }
+    </script>
     <!-- For additional page-specific JS -->
     @stack('js')
 </body>
