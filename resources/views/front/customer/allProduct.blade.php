@@ -27,7 +27,8 @@
           <div class="aa-product-catg-content">
             <div class="aa-product-catg-head">
               <div class="aa-product-catg-head-left">
-                <form action="" class="aa-sort-form">
+                <h4>All Product</h4>
+                {{-- <form action="" class="aa-sort-form">
                   <label for="">Sort by</label>
                   <select name="">
                     <option value="1" selected="Default">Default</option>
@@ -43,7 +44,7 @@
                     <option value="2">24</option>
                     <option value="3">36</option>
                   </select>
-                </form>
+                </form> --}}
               </div>
               <div class="aa-product-catg-head-right">
                 <a id="grid-catg" href="#"><span class="fa fa-th"></span></a>
@@ -56,8 +57,8 @@
                 @foreach($allProduct as $product)
                 <li>
                   <figure>
-                    <a class="aa-product-img" href="#"><img src="{{asset('public/front_asset/img/product_img/'.($product->product_image ?? 'default.png'))}}" alt="img"></a>
-                    <a class="aa-add-card-btn"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
+                    <a class="aa-product-img" href="{{route('customer.getProductDetail', $product->id)}}"><img src="{{asset('public/front_asset/img/product_img/'.($product->product_image ?? 'default.png'))}}" alt="img"></a>
+                    <a class="aa-add-card-btn"href="{{route('customer.getProductDetail', $product->id)}}"><span class="fa fa-shopping-cart"></span>Add to cart</a>
                     <figcaption>
                       <h4 class="aa-product-title"><a href="#">{{$product->name}}</a></h4>
                       <span class="aa-product-price">Rs.{{$product->price ?? 'N/A'}}</span>

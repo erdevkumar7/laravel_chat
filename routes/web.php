@@ -22,6 +22,7 @@ use App\Http\Controllers\ProductController;
 
 Route::get('/', [CustomerController::class, 'Home'])->name('home');
 Route::get('/allProduct', [CustomerController::class, 'getAllProduct'])->name('customer.getAllProduct');
+Route::get('/productDetail/{id}', [CustomerController::class, 'getProductDetail'])->name('customer.getProductDetail');
 
 
 // User Chat
