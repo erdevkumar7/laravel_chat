@@ -60,6 +60,7 @@ Route::prefix('customer')->group(function () {
 // Pusher auth route (outside middleware to allow Pusher requests)
 Route::post('/pusher/auth', [ChatController::class, 'authenticatePusher'])->name('pusher.auth');
 
+// Vendor Functionality
 Route::prefix('vendor')->group(function () {
     Route::get('/register', [AuthController::class, 'vendorRegister'])->name('vendor.register');
     Route::post('/register', [AuthController::class, 'vendorRegisterSubmit'])->name('vendor.registerSubmit');
@@ -68,12 +69,17 @@ Route::prefix('vendor')->group(function () {
     Route::post('/login', [AuthController::class, 'vendorLoginSubmit'])->name('vendor.loginSubmit');
 
     Route::middleware('vendor')->group(function () {
-        Route::any('/dashboard', [VendorController::class, 'dashboard'])->name('vendor.dashboard');
-
-   
-
+        Route::any('/dashboard', [VendorController::class, 'dashboard'])->name('vendor.dashboard'); 
         Route::post('/logout', [AuthController::class, 'vendorLogout'])->name('vendor.logout');
+
+       
+        Route::any('/addProduct/{id?}',[ProductController::class, 'vendorAddProduct'])->name('vendor.addProduct');
+       
     });
+
+    //vendor product functionality
+
+
 });
 
 // Admin Functionality
@@ -89,13 +95,10 @@ Route::prefix('admin')->group(function () {
         Route::any('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::any('/users', [AdminController::class, 'allUsers'])->name('admin.allUsers');
 
+        // Admin Category Manage
+        Route::any('/addCategory/{id?}', [ProductController::class, 'adminAddCategory'])->name('admin.addCategory');
         Route::post('/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
     });
     
-    Route::prefix('product')->group(function(){
-        Route::middleware('admin')->group(function(){
-            Route::any('/addCategory/{id?}', [ProductController::class, 'adminAddCategory'])->name('admin.addCategory');
-        });
-
-    });
+  
 });

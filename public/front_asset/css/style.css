@@ -3197,10 +3197,10 @@ img {
 ====================*/
 
 #aa-contact {
-  background: #ccc none repeat scroll 0 0;
+  /* background: #ccc none repeat scroll 0 0; */
   display: inline;
   float: left;
-  width: 100%;
+  /* width: 100%; */
 }
 #aa-contact .aa-contact-area {
   display: inline;
@@ -3212,7 +3212,7 @@ img {
   background-color: #FFF;
   display: inline;
   float: left;
-  padding: 50px 100px;
+  /* padding: 50px 100px; */
   text-align: center;
   width: 100%;
 }

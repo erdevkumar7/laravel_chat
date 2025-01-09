@@ -25,11 +25,11 @@
                                             @enderror
                                         </div>
                                         <div class="col-12 col-md-6">
-                                            <label for="text-desc" class=" form-control-label">Short Description*</label>
-                                            <input type="text" id="text-desc" name="description" value="{{old('description')}}"
-                                                placeholder="description" class="form-control"
-                                                oninput="removeError('descriptionErr')">
-                                            @error('description')
+                                            <label for="text-slug" class=" form-control-label">Category Slug*</label>
+                                            <input type="text" id="text-slug" name="category_slug" value="{{old('category_slug')}}"
+                                                placeholder="i.e mens wear" class="form-control"
+                                                oninput="removeError('category_slugErr')">
+                                            @error('category_slug')
                                                 <small class="form-text text-danger"
                                                     id='descriptionErr'>{{ $message }}</small>
                                             @enderror

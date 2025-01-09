@@ -95,7 +95,7 @@
                         </li>
                         <li class="has-sub">
                             <a class="js-arrow" href="#">
-                                <i class="fas fa-copy"></i>Products</a>
+                                <i class="fas fa-copy"></i>Category Manage</a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
                                 <li>
                                     <a href="{{route('admin.addCategory')}}">Category</a>
