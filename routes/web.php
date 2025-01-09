@@ -21,6 +21,8 @@ use App\Http\Controllers\ProductController;
 */
 
 Route::get('/', [CustomerController::class, 'Home'])->name('home');
+Route::get('/allProduct', [CustomerController::class, 'getAllProduct'])->name('customer.getAllProduct');
+
 
 // User Chat
 Route::middleware('user')->group(function () {
