@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Size;
+use App\Models\Color;
 
 class CustomerController extends Controller
 {
@@ -49,6 +51,8 @@ class CustomerController extends Controller
             })
             ->firstOrFail();
 
-        return view('front.customer.productDetail', compact('product'));
+         $sizes = Size::where('is_active', 1)->get();   
+          $colors = Color::Where('is_active', 1)->get(); 
+        return view('front.customer.productDetail', compact('product', 'sizes', 'colors'));
     }
 }

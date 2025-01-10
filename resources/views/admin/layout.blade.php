@@ -103,7 +103,9 @@
                                 <li>
                                     <a href="{{route('admin.getAllSize')}}">Size</a>
                                 </li>
-
+                                <li>
+                                    <a href="{{route('admin.getAllColor')}}">Color</a>
+                                </li>                                
                             </ul>
                         </li>
                     </ul>

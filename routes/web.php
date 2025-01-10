@@ -108,6 +108,10 @@ Route::prefix('admin')->group(function () {
         // Admin size Manage
         Route::get('/allSize', [MasterController::class, 'getAllSizeByAdmin'])->name('admin.getAllSize');
         Route::any('/addSize', [MasterController::class, 'adminAddSize'])->name('admin.addSize');
+
+        // Admin Color Manage
+        Route::get('/allColor', [MasterController::class, 'getAllColorByAdmin'])->name('admin.getAllColor');
+        Route::any('/addColor', [MasterController::class, 'adminAddColor'])->name('admin.addColor');
     });
     
   

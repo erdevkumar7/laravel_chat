@@ -1,15 +1,15 @@
 @extends('admin.layout')
-@section('title', 'allSize')
+@section('title', 'allColor')
 
 @section('content')
 <div class="container-fluid">
     <div class="table-data__tool">
         <div class="table-data__tool-left">
-            <h3>Product Sizes</h3>
+            <h3>Product Colors</h3>
         </div>
-        <div class="table-data__tool-right"><a href="{{ route('admin.addSize') }}">
+        <div class="table-data__tool-right"><a href="{{ route('admin.addColor') }}">
                 <button class="au-btn au-btn-icon au-btn--green au-btn--small">
-                    <i class="zmdi zmdi-plus"></i>add Size</button></a>
+                    <i class="zmdi zmdi-plus"></i>add Color</button></a>
         </div>
     </div>
     <div class="row m-t-10">
@@ -20,23 +20,25 @@
                     <thead>
                         <tr>
                             <th>S.No.</th>
-                            <th>Size Name</th>
+                            <th>Color Name</th>
+                            <th>Color Code</th>
                             <th>status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if ($sizes->isEmpty())
+                        @if ($colors->isEmpty())
                             <tr>
-                                <td colspan="4" class="text-center">No Data Available</td>
+                                <td colspan="5" class="text-center">No Data Available</td>
                             </tr>
                         @else
-                            @foreach ($sizes as $size)
+                            @foreach ($colors as $color)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $size->name }}</td>
+                                    <td>{{ $color->name }}</td>
+                                    <td>{{ $color->code}}</td>
                                     <td>
-                                        @if ($size->is_active)
+                                        @if ($color->is_active)
                                             <span class="role member">Active</span>
                                         @else
                                             <span class="role admin">Inactive</span>

@@ -34,7 +34,7 @@
                                             <div class="simpleLens-container">
                                                 <div class="simpleLens-big-image-container"><a
                                                         class="simpleLens-lens-image"><img
-                                                            src="{{ asset('public/front_asset/img/product_img/'.($product->product_image ?? 'default.png')) }}"
+                                                            src="{{ asset('public/front_asset/img/product_img/' . ($product->product_image ?? 'default.png')) }}"
                                                             class="simpleLens-big-image"></a>
                                                 </div>
                                             </div>
@@ -58,18 +58,15 @@
                                         <p>{{ $product->description }}</p>
                                         <h4>Size</h4>
                                         <div class="aa-prod-view-size">
-                                            <a href="#">S</a>
-                                            <a href="#">M</a>
-                                            <a href="#">L</a>
-                                            <a href="#">XL</a>
+                                            @foreach ($sizes as $size)
+                                                <a href="javascript:void(0)">{{ $size->name }}</a>
+                                            @endforeach
                                         </div>
                                         <h4>Color</h4>
                                         <div class="aa-color-tag">
-                                            <a href="#" class="aa-color-green"></a>
-                                            <a href="#" class="aa-color-yellow"></a>
-                                            <a href="#" class="aa-color-pink"></a>
-                                            <a href="#" class="aa-color-black"></a>
-                                            <a href="#" class="aa-color-white"></a>
+                                            @foreach ($colors as $color)
+                                                <a href="javascript:void(0)" class="aa-color-{{strtolower($color->name)}}"></a>
+                                            @endforeach
                                         </div>
                                         <div class="aa-prod-quantity">
                                             <form action="">
