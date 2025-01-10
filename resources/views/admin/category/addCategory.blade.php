@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-                                    <button type="reset" class="btn btn-danger btn-sm">Back</button>
+                                    <a href="{{route('admin.getAllCategory')}}"><button type="button" class="btn btn-danger btn-sm">Back</button></a>
                                 </div>
                             </form>
                         </div>

@@ -7,6 +7,11 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
+    public function getAdminAllCategory(){
+        $categories = Category::orderBy('created_at', 'desc')->get();       
+        return view('admin.category.allCategory', compact('categories'));
+    }
+
     public function adminAddCategory(Request $request, $id = null)
     {
         if ($request->isMethod('post')) {
@@ -18,7 +23,6 @@ class CategoryController extends Controller
             ]);
 
             $category = Category::where('name', $validateData['name'])
-                ->where('is_deleted', '0')
                 ->first();
             if ($category) {
                 return back()->withErrors([

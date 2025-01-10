@@ -95,13 +95,13 @@
                         </li>
                         <li class="has-sub">
                             <a class="js-arrow" href="#">
-                                <i class="fas fa-copy"></i>Category Manage</a>
+                                <i class="fas fa-copy"></i>Setting</a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
                                 <li>
-                                    <a href="{{route('admin.addCategory')}}">Category</a>
+                                    <a href="{{route('admin.getAllCategory')}}">Category</a>
                                 </li>
                                 <li>
-                                    <a href="#">Setting</a>
+                                    <a href="#"></a>
                                 </li>
                                 
                             </ul>

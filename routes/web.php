@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UserController;
@@ -20,7 +21,7 @@ use App\Http\Controllers\ProductController;
 |
 */
 
-Route::get('/', [CustomerController::class, 'Home'])->name('home');
+Route::get('/home', [CustomerController::class, 'Home'])->name('home');
 Route::get('/allProduct', [CustomerController::class, 'getAllProduct'])->name('customer.getAllProduct');
 Route::get('/productDetail/{id}', [CustomerController::class, 'getProductDetail'])->name('customer.getProductDetail');
 
@@ -99,7 +100,8 @@ Route::prefix('admin')->group(function () {
         Route::any('/users', [AdminController::class, 'allUsers'])->name('admin.allUsers');
 
         // Admin Category Manage
-        Route::any('/addCategory/{id?}', [ProductController::class, 'adminAddCategory'])->name('admin.addCategory');
+        Route::get('/allCategory', [CategoryController::class, 'getAdminAllCategory'])->name('admin.getAllCategory');
+        Route::any('/addCategory/{id?}', [CategoryController::class, 'adminAddCategory'])->name('admin.addCategory');
         Route::post('/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
     });
     

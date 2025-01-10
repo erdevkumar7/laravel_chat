@@ -25,14 +25,13 @@ class CustomerController extends Controller
             ->where('is_active', 1)
             ->where('is_available', 1)
             ->whereHas('category', function ($query) {
-                $query->where('is_active', 1)->where('is_deleted', 0);
+                $query->where('is_active', 1);
             })
             ->orderBy('created_at', 'desc')
             ->get();
 
         // Fetch all active categories
         $allCategories = Category::where('is_active', 1)
-            ->where('is_deleted', 0)
             ->get();
 
         return view('front.customer.allProduct', compact('allProduct', 'allCategories'));
@@ -46,8 +45,7 @@ class CustomerController extends Controller
             ->where('is_active', 1)
             ->where('is_available', 1)
             ->whereHas('category', function ($query) {
-                $query->where('is_active', 1)
-                    ->where('is_deleted', 0);
+                $query->where('is_active', 1);
             })
             ->firstOrFail();
 
