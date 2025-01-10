@@ -7,7 +7,7 @@
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script>
         // Enable pusher logging - don't include this in production
-        
+
         if ('Notification' in window && Notification.permission !== 'granted') {
             Notification.requestPermission().then(permission => {
                 if (permission === 'granted') {
@@ -39,19 +39,35 @@
         channel.bind('App\\Events\\ChatMessageSent', function(data) {
             console.log('Message received:', data);
             // Display a real-time push notification (e.g., with a library or browser notifications API)
-            if (Notification.permission === 'granted') {
-                new Notification('New Message', {
-                    body: data.message,
-                    icon: '/projecthub/public/front_asset/img/logo.jpg', // Optional: Add an icon URL
-                });
-            } else {
-                alert(`New message from User: ${data.message}`);
-            }
+            // if (Notification.permission === 'granted') {
+            //     new Notification('New Message', {
+            //         body: data.message,
+            //         icon: '/projecthub/public/front_asset/img/logo.jpg', // Optional: Add an icon URL
+            //     });
+            // } else {
+            //     alert(`New message from User: ${data.message}`);
+            // }
+            const vendorId = {{ Auth::guard('vendor')->user()->id }}; // Pass the authenticated user's ID from Blade
+            const vendorProfilePic =
+                "{{ asset('public/front_asset/img/vendor_profile/' . (Auth::guard('vendor')->user()->profile_pic ?? 'default.png')) }}";
+            const customerProfilePic =
+                "{{ asset('public/front_asset/img/customer_profile/' . ($user->profile_pic ?? 'default.png')) }}";
+            const messageSender = data.sender_id == vendorId ? 'You' : 'Customer';
+            const profilePic = data.sender_id == vendorId ? vendorProfilePic : customerProfilePic;
+
             const message = `
-            <p>
-                <strong>${data.sender_id == {{ Auth::guard('vendor')->user()->id }} ? 'You' : 'User'}:</strong> ${data.message}
-                <span class="text-muted small">${data.created_at}</span>
-            </p>`;
+        <li> 
+           <div class="media">
+            <div class="media-left">
+                <img class="media-object news-img" src="${profilePic}" alt="img">
+            </div>
+            <div class="media-body">
+                <h4 class="author-name">${messageSender}</h4>
+                <span class="comments-date">${data.created_at}</span>
+                <p>${data.message}</p>
+            </div>
+        </div>
+        </li>`;
             document.querySelector('#messages').innerHTML += message;
 
         });
@@ -86,37 +102,36 @@
                             <div class="col-md-12">
                                 <!-- Blog details -->
                                 <div class="aa-blog-content aa-blog-details">
-
                                     <div class="aa-blog-comment-threat">
                                         <h3>Messages </h3>
                                         <div class="comments">
-                                            {{-- <ul class="commentlist" >
-                                                <li>
-                                                    <div class="media">
-                                                        <div class="media-left">
-                                                            <img class="media-object news-img"
-                                                                src="{{ asset('public/front_asset/img/testimonial-img-3.jpg') }}"
-                                                                alt="img">
-                                                        </div>
-                                                        <div class="media-body">
-                                                            <h4 class="author-name">Charlie Balley</h4>
-                                                            <span class="comments-date"> March 26th 2016</span>
-                                                            <p id="messages"></p>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul> --}}
+                                            <ul class="commentlist" id="messages">
+                                                @foreach ($messages as $message)
+                                                    <li>
+                                                        <div class="media">
+                                                            <div class="media-left">
+                                                                @if ($message->sender_id == Auth::guard('vendor')->user()->id)
+                                                                    <img class="media-object news-img"
+                                                                        src="{{ asset('public/front_asset/img/vendor_profile/' . (Auth::guard('vendor')->user()->profile_pic ?? 'default.png')) }}"
+                                                                        alt="img">
+                                                                @else
+                                                                    <img class="media-object news-img"
+                                                                        src="{{ asset('public/front_asset/img/customer_profile/' . ($user->profile_pic ?? 'default.png')) }}";
+                                                                        alt="img">
+                                                                @endif
 
-                                            <ul class="commentlist">
-                                                <li id="messages">
-                                                    @foreach ($messages as $message)
-                                                        <p>
-                                                            <strong>{{ $message->sender_id == Auth::guard('vendor')->user()->id ? 'You' : 'User' }}:</strong>
-                                                            {{ $message->message }}
-                                                            <span class="text-muted small">{{ $message->created_at }}</span>
-                                                        </p>
-                                                    @endforeach
-                                                </li>
+                                                            </div>
+                                                            <div class="media-body">
+                                                                <h4 class="author-name">
+                                                                    {{ $message->sender_id == Auth::guard('vendor')->user()->id ? 'You' : 'Customer' }}
+                                                                </h4>
+                                                                <span class="comments-date">
+                                                                    {{ $message->created_at }}</span>
+                                                                <p>{{ $message->message }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                @endforeach
                                             </ul>
                                         </div>
                                     </div>

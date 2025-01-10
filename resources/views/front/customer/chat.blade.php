@@ -34,12 +34,7 @@
             const customerProfilePic =
                 "{{ asset('public/front_asset/img/customer_profile/' . (Auth::guard('web')->user()->profile_pic ?? 'default.png')) }}";
             const messageSender = data.sender_id == userId ? 'You' : 'Vendor';
-            const profilePic = data.sender_id == userId ? customerProfilePic : vendorProfilePic;
-            // const message = `
-        //  <p> 
-        //    <strong>${data.sender_id == {{ Auth::guard('web')->user()->id }} ? 'You' : 'Vendor'}:</strong> ${data.message}
-        //    <span class="text-muted small">${data.created_at}</span>
-        //  </p>`;
+            const profilePic = data.sender_id == userId ? customerProfilePic : vendorProfilePic;    
 
             const message = `
         <li> 
@@ -118,18 +113,6 @@
                                                     </li>
                                                 @endforeach
                                             </ul>
-                                            {{-- <ul class="commentlist">
-                                                <li id="messages">
-                                                    @foreach ($messages as $message)
-                                                        <p>
-                                                            <strong>{{ $message->sender_id == Auth::guard('web')->user()->id ? 'You' : 'Vendor' }}:</strong>
-                                                            {{ $message->message }}
-                                                            <span
-                                                                class="text-muted small">{{ $message->created_at }}</span>
-                                                        </p>
-                                                    @endforeach
-                                                </li>
-                                            </ul> --}}
                                         </div>
                                     </div>
 

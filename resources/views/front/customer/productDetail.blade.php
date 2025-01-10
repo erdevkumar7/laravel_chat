@@ -91,6 +91,7 @@
                             <ul class="nav nav-tabs" id="myTab2">
                                 <li><a href="#description" data-toggle="tab">Description</a></li>
                                 <li><a href="#review" data-toggle="tab">Reviews</a></li>
+                                <li><a href="{{route('customer.chat.get', $product->vendor_id)}}">Chat</a></li>
                             </ul>
 
                             <!-- Tab panes -->
