@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\MasterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\ProductController;
@@ -97,12 +98,16 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware('admin')->group(function () {
         Route::any('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::post('/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
         Route::any('/users', [AdminController::class, 'allUsers'])->name('admin.allUsers');
 
         // Admin Category Manage
         Route::get('/allCategory', [CategoryController::class, 'getAdminAllCategory'])->name('admin.getAllCategory');
         Route::any('/addCategory/{id?}', [CategoryController::class, 'adminAddCategory'])->name('admin.addCategory');
-        Route::post('/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
+
+        // Admin size Manage
+        Route::get('/allSize', [MasterController::class, 'getAllSizeByAdmin'])->name('admin.getAllSize');
+        Route::any('/addSize', [MasterController::class, 'adminAddSize'])->name('admin.addSize');
     });
     
   

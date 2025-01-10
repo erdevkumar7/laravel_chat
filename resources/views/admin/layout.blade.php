@@ -26,7 +26,7 @@
         media="all">
 
     <!-- Vendor CSS-->
-    <link href="{{asset('public/admin_asset/vendor/animsition/animsition.min.css')}}" rel="stylesheet" media="all">
+    <link href="{{ asset('public/admin_asset/vendor/animsition/animsition.min.css') }}" rel="stylesheet" media="all">
     {{-- <link href="{{asset('public/admin_asset/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css')}}" rel="stylesheet" media="all"> --}}
     {{-- <link href="{{asset('public/admin_asset/vendor/wow/animate.css')}}" rel="stylesheet" media="all"> --}}
     {{-- <link href="{{asset('public/admin_asset/vendor/css-hamburgers/hamburgers.min.css')}}" rel="stylesheet" media="all"> --}}
@@ -95,15 +95,15 @@
                         </li>
                         <li class="has-sub">
                             <a class="js-arrow" href="#">
-                                <i class="fas fa-copy"></i>Setting</a>
+                                <i class="fas fa-copy"></i>Manage Setting</a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
                                 <li>
-                                    <a href="{{route('admin.getAllCategory')}}">Category</a>
+                                    <a href="{{ route('admin.getAllCategory') }}">Category</a>
                                 </li>
                                 <li>
-                                    <a href="#"></a>
+                                    <a href="{{route('admin.getAllSize')}}">Size</a>
                                 </li>
-                                
+
                             </ul>
                         </li>
                     </ul>
@@ -166,9 +166,21 @@
             <!-- HEADER DESKTOP-->
 
             <!-- MAIN CONTENT-->
-            <main>
-                @yield('content')
-            </main>
+            <div class="main-content">
+                <div class="section__content section__content--p30">
+                    @yield('content')  <!-- HERE IS THE MAIN CONTENT-->
+                    
+                    {{-- <div class="row">    
+                        <div class="col-md-12">
+                            <div class="copyright">
+                                <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a
+                                        href="#">Colorlib</a>.</p>
+                            </div>
+                        </div>
+                    </div> --}}
+                </div>
+            </div>
+
 
             <!-- END MAIN CONTENT-->
             <!-- END PAGE CONTAINER-->

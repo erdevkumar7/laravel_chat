@@ -31,7 +31,7 @@ class CategoryController extends Controller
             }
 
             Category::create($validateData);
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.getAllCategory');
         }
         return view('admin.category.addCategory');
     }
