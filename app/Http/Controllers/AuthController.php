@@ -8,10 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
 use App\Models\User;
 use App\Models\Vendor;
+use App\Models\Cart;
 
 class AuthController extends Controller
 {
-      //*******************************************************************//
+    //*******************************************************************//
     // Admin Auth functionas ******************************************
     public function adminRegister()
     {
@@ -133,6 +134,37 @@ class AuthController extends Controller
         }
     }
 
+    public function migrateGuestCartToUser()
+    {
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $sessionCart = session()->get('guest_cart', []);
+
+            foreach ($sessionCart as $productId => $item) {
+                $existingCart = Cart::where('user_id', $userId)
+                    ->where('product_id', $productId)
+                    ->first();
+
+                if ($existingCart) {
+                    // Update quantity if product exists
+                    $existingCart->quantity += $item['quantity'];
+                    $existingCart->save();
+                } else {
+                    // Add new product to the database cart
+                    Cart::create([
+                        'user_id' => $userId,
+                        'product_id' => $productId,
+                        'quantity' => $item['quantity'],
+                    ]);
+                }
+            }
+
+            // Clear the session cart after merging
+            session()->forget('guest_cart');
+        }
+    }
+
+
     public function customerLogin()
     {
         if (Auth::guard('web')->check()) {
@@ -149,6 +181,9 @@ class AuthController extends Controller
         ]);
 
         if (Auth::guard('web')->attempt($credential)) {
+
+            // Transfer the session cart to the database cart
+            $this->migrateGuestCartToUser();
             return redirect()->route('customer.dashboard');
         }
 

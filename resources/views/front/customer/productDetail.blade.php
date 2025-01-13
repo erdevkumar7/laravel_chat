@@ -65,24 +65,53 @@
                                         <h4>Color</h4>
                                         <div class="aa-color-tag">
                                             @foreach ($colors as $color)
-                                                <a href="javascript:void(0)" class="aa-color-{{strtolower($color->name)}}"></a>
+                                                <a href="javascript:void(0)"
+                                                    class="aa-color-{{ strtolower($color->name) }}"></a>
                                             @endforeach
                                         </div>
                                         <div class="aa-prod-quantity">
                                             <form action="">
-                                                <select id="" name="">
-                                                    <option selected="1" value="0">1</option>
-                                                    <option value="1">2</option>
-                                                    <option value="2">3</option>
-                                                    <option value="3">4</option>
-                                                    <option value="4">5</option>
-                                                    <option value="5">6</option>
+                                                <select id="productQuantityId" name="">
+                                                    <option selected="1" value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
                                                 </select>
                                             </form>
                                             <p class="aa-prod-category">
                                                 Category: <a href="#">{{ $product->category->name }}</a>
                                             </p>
                                         </div>
+                                        <div class="aa-prod-view-bottom">
+                                            <a class="aa-add-to-cart-btn product-add-to-cart" href="javascript:void(0)"
+                                                data-product-id="{{ $product->id }}">Add To Cart</a>
+                                            <a class="aa-add-to-cart-btn" href="#">Wishlist</a>
+                                        </div>
+
+                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Ensure jQuery is included -->
+                                        <script>
+                                            $(document).on('click', '.product-add-to-cart', function() {
+                                                const productId = $(this).data('product-id');
+                                                const quantity = $('#productQuantityId').val();
+                                                $.ajax({
+                                                    url: "{{ route('customer.productAddToCart') }}",
+                                                    method: 'POST',
+                                                    data: {
+                                                        product_id: productId,
+                                                        quantity: quantity,
+                                                        _token: "{{ csrf_token() }}",
+                                                    },
+                                                    success: function(response) {
+                                                        alert(response.message);
+                                                    },
+                                                    error: function(xhr) {
+                                                        alert('Something went wrong. Please try again.');
+                                                    },
+                                                });
+                                            });
+                                        </script>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +120,7 @@
                             <ul class="nav nav-tabs" id="myTab2">
                                 <li><a href="#description" data-toggle="tab">Description</a></li>
                                 <li><a href="#review" data-toggle="tab">Reviews</a></li>
-                                <li><a href="{{route('customer.chat.get', $product->vendor_id)}}">Chat</a></li>
+                                {{-- <li><a href="{{route('customer.chat.get', $product->vendor_id)}}">Chat</a></li> --}}
                             </ul>
 
                             <!-- Tab panes -->

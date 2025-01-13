@@ -25,8 +25,10 @@ use App\Http\Controllers\ProductController;
 Route::get('/home', [CustomerController::class, 'Home'])->name('home');
 Route::get('/allProduct', [CustomerController::class, 'getAllProduct'])->name('customer.getAllProduct');
 Route::get('/productDetail/{id}', [CustomerController::class, 'getProductDetail'])->name('customer.getProductDetail');
+Route::post('/productAddToCart', [CustomerController::class, 'productAddToCart'])->name('customer.productAddToCart');
 
-
+// Pusher auth route (outside middleware to allow Pusher requests)
+Route::post('/pusher/auth', [ChatController::class, 'authenticatePusher'])->name('pusher.auth');
 // User Chat
 Route::middleware('user')->group(function () {
     Route::get('/chat/allvendor', [ChatController::class, 'getAllVendorForChat'])->name('chat.getAllVendor');
@@ -35,7 +37,6 @@ Route::middleware('user')->group(function () {
     Route::post('/chat/send', [ChatController::class, 'sendCustomerMessage'])->name('customer.sendMessage');   
 
 });
-
 // Vendor Chat
 Route::prefix('vendor')->group(function(){
     Route::middleware('vendor')->group(function () {
@@ -45,8 +46,8 @@ Route::prefix('vendor')->group(function(){
     });
 });
 
-// User Auth Functionality
 Route::prefix('customer')->group(function () {
+    // User Auth Functionality
     Route::get('/register', [AuthController::class, 'customerRegister'])->name('customer.register');
     Route::post('/register', [AuthController::class, 'customerRegisterSubmit'])->name('customer.registerSubmit');
 
@@ -55,15 +56,13 @@ Route::prefix('customer')->group(function () {
 
     Route::middleware('user')->group(function () {
         Route::any('/dashboard', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
-
-       
-
         Route::post('/logout', [AuthController::class, 'customerLogout'])->name('customer.logout');
+      
+
     });
 });
 
-// Pusher auth route (outside middleware to allow Pusher requests)
-Route::post('/pusher/auth', [ChatController::class, 'authenticatePusher'])->name('pusher.auth');
+
 
 // Vendor Functionality
 Route::prefix('vendor')->group(function () {
