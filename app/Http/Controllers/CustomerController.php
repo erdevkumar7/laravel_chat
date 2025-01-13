@@ -64,49 +64,70 @@ class CustomerController extends Controller
     {
         $productId = $request->product_id;
         $quantity = $request->quantity ?? 1;
-    
+
         if (Auth::check()) {
             // Logged-in user: Store cart in the database
             $userId = Auth::id();
-    
+
             // Check if the product is already in the cart
             $cart = Cart::where('user_id', $userId)
-                        ->where('product_id', $productId)
-                        ->first();
-    
+                ->where('product_id', $productId)
+                ->first();
+
             if ($cart) {
                 return response()->json(['message' => 'Product already in cart'], 200);
             }
-    
+
             // Add product to the cart in the database
             Cart::create([
                 'user_id' => $userId,
                 'product_id' => $productId,
                 'quantity' => $quantity,
             ]);
-    
+
             return response()->json(['message' => 'Product added to cart successfully'], 201);
-    
         } else {
             // Guest user: Use session for cart
             $cart = session()->get('guest_cart', []);
-    
+
             // Check if product already exists in the session cart
             if (isset($cart[$productId])) {
                 return response()->json(['message' => 'Product already in cart'], 200);
             }
-    
+
             // Add product to the session cart
             $cart[$productId] = [
                 'product_id' => $productId,
                 'quantity' => $quantity,
             ];
-    
+
             // Save the updated cart back to the session
             session(['guest_cart' => $cart]);
-    
+
             return response()->json(['message' => 'Product added to cart successfully'], 201);
         }
     }
-    
+
+    public function viewCart()
+    {
+        // Guest user: Fetch cart from the session
+        $sessionCart = session()->get('guest_cart', []);
+        // Optionally, add product details for guest cart
+        $cartItems = [];
+        foreach ($sessionCart as $productId => $item) {
+            $product = Product::find($productId); // Assuming you have a Product model
+            if ($product) {
+                $cartItems[] = [
+                    'product_id' => $productId,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'quantity' => $item['quantity'],
+                    'total' => $product->price * $item['quantity'],
+                ];
+            }
+        }
+
+        // dd($cartItems);
+        return view('front.customer.viewCart', compact('cartItems'));
+    }
 }

@@ -26,7 +26,7 @@ Route::get('/home', [CustomerController::class, 'Home'])->name('home');
 Route::get('/allProduct', [CustomerController::class, 'getAllProduct'])->name('customer.getAllProduct');
 Route::get('/productDetail/{id}', [CustomerController::class, 'getProductDetail'])->name('customer.getProductDetail');
 Route::post('/productAddToCart', [CustomerController::class, 'productAddToCart'])->name('customer.productAddToCart');
-
+Route::get('/viewCart', [CustomerController::class, 'viewCart'])->name('customer.viewCart');
 // Pusher auth route (outside middleware to allow Pusher requests)
 Route::post('/pusher/auth', [ChatController::class, 'authenticatePusher'])->name('pusher.auth');
 // User Chat
