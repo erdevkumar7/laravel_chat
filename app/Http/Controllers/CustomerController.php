@@ -9,6 +9,7 @@ use App\Models\Size;
 use App\Models\Color;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class CustomerController extends Controller
 {
@@ -45,6 +46,7 @@ class CustomerController extends Controller
 
     public function getProductDetail($id)
     {
+        // dd(Session::all());
         // dd(session('guest_cart'));
         $product = Product::with('category')
             ->where('id', $id)
@@ -65,47 +67,46 @@ class CustomerController extends Controller
         $productId = $request->product_id;
         $quantity = $request->quantity ?? 1;
 
-        if (Auth::check()) {
-            // Logged-in user: Store cart in the database
-            $userId = Auth::id();
+        // Check if the product exists
+        $product = Product::find($productId);
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
 
-            // Check if the product is already in the cart
-            $cart = Cart::where('user_id', $userId)
+        if (Auth::guard('web')->check()) {
+            // Logged-in user
+            $cart = Cart::where('user_id', Auth::guard('web')->user()->id)
                 ->where('product_id', $productId)
                 ->first();
 
             if ($cart) {
                 return response()->json(['message' => 'Product already in cart'], 200);
+            } else {
+                $cart = new Cart();
+                $cart->user_id = Auth::guard('web')->user()->id;
+                $cart->product_id = $productId;
+                $cart->quantity = $quantity;
             }
-
-            // Add product to the cart in the database
-            Cart::create([
-                'user_id' => $userId,
-                'product_id' => $productId,
-                'quantity' => $quantity,
-            ]);
-
-            return response()->json(['message' => 'Product added to cart successfully'], 201);
+            $cart->save();
         } else {
-            // Guest user: Use session for cart
-            $cart = session()->get('guest_cart', []);
+            // Guest user
+            $sessionId = session()->getId();
+            $cart = Cart::where('session_id', $sessionId)
+                ->where('product_id', $productId)
+                ->first();
 
-            // Check if product already exists in the session cart
-            if (isset($cart[$productId])) {
+            if ($cart) {
                 return response()->json(['message' => 'Product already in cart'], 200);
+            } else {
+                $cart = new Cart();
+                $cart->session_id = $sessionId;
+                $cart->product_id = $productId;
+                $cart->quantity = $quantity;
             }
-
-            // Add product to the session cart
-            $cart[$productId] = [
-                'product_id' => $productId,
-                'quantity' => $quantity,
-            ];
-
-            // Save the updated cart back to the session
-            session(['guest_cart' => $cart]);
-
-            return response()->json(['message' => 'Product added to cart successfully'], 201);
+            $cart->save();
         }
+
+        return response()->json(['message' => 'Product added to cart successfully'], 201);
     }
 
     public function viewCart()

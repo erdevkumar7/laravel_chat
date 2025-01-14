@@ -134,35 +134,30 @@ class AuthController extends Controller
         }
     }
 
-    public function migrateGuestCartToUser()
+    protected function mergeGuestCartToUserCart($oldSessionId)
     {
-        if (Auth::check()) {
-            $userId = Auth::id();
-            $sessionCart = session()->get('guest_cart', []);
-
-            foreach ($sessionCart as $productId => $item) {
-                $existingCart = Cart::where('user_id', $userId)
-                    ->where('product_id', $productId)
-                    ->first();
-
-                if ($existingCart) {
-                    // Update quantity if product exists
-                    $existingCart->quantity += $item['quantity'];
-                    $existingCart->save();
-                } else {
-                    // Add new product to the database cart
-                    Cart::create([
-                        'user_id' => $userId,
-                        'product_id' => $productId,
-                        'quantity' => $item['quantity'],
-                    ]);
-                }
+        $userId = Auth::guard('web')->user()->id;    
+        // Fetch guest cart items
+        $guestCartItems = Cart::where('session_id', $oldSessionId)->get();
+    
+        foreach ($guestCartItems as $item) {
+            $existingCartItem = Cart::where('user_id', $userId)
+                ->where('product_id', $item->product_id)
+                ->first();
+    
+            if ($existingCartItem) {
+                // Merge quantities
+                $existingCartItem->quantity += $item->quantity;
+                $existingCartItem->save();
+            } else {
+                // Assign guest cart item to user
+                $item->user_id = $userId;
+                $item->session_id = null;
+                $item->save(); 
             }
-
-            // Clear the session cart after merging
-            session()->forget('guest_cart');
         }
     }
+    
 
 
     public function customerLogin()
@@ -179,11 +174,12 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
+        // Store the old session ID
+        $oldSessionId = session()->getId();
 
         if (Auth::guard('web')->attempt($credential)) {
-
-            // Transfer the session cart to the database cart
-            $this->migrateGuestCartToUser();
+            // Merge guest cart to logged-in user's cart
+            $this->mergeGuestCartToUserCart($oldSessionId);
             return redirect()->route('customer.dashboard');
         }
 
