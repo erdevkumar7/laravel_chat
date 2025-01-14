@@ -162,6 +162,7 @@ class AuthController extends Controller
 
     public function customerLogin()
     {
+        session(['url.intended' => url()->previous()]);
         if (Auth::guard('web')->check()) {
             return redirect()->route('customer.dashboard');
         }
@@ -180,7 +181,8 @@ class AuthController extends Controller
         if (Auth::guard('web')->attempt($credential)) {
             // Merge guest cart to logged-in user's cart
             $this->mergeGuestCartToUserCart($oldSessionId);
-            return redirect()->route('customer.dashboard');
+            // return redirect()->route('customer.dashboard');
+            return redirect()->intended(route('customer.checkOut')); 
         }
 
         return back()->withErrors([

@@ -111,24 +111,26 @@ class CustomerController extends Controller
 
     public function viewCart()
     {
-        // Guest user: Fetch cart from the session
-        $sessionCart = session()->get('guest_cart', []);
-        // Optionally, add product details for guest cart
-        $cartItems = [];
-        foreach ($sessionCart as $productId => $item) {
-            $product = Product::find($productId); // Assuming you have a Product model
-            if ($product) {
-                $cartItems[] = [
-                    'product_id' => $productId,
-                    'name' => $product->name,
-                    'price' => $product->price,
-                    'quantity' => $item['quantity'],
-                    'total' => $product->price * $item['quantity'],
-                ];
-            }
+        if (Auth::guard('web')->check()) {
+            $cartItems = Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get();
+        } else {
+            $sessionId = session()->getId();
+            // dd($sessionId);
+            $cartItems = Cart::where('session_id', $sessionId)->with('product')->get();
         }
-
-        // dd($cartItems);
+        //    dd($cartItems);
         return view('front.customer.viewCart', compact('cartItems'));
+    }
+
+    public function checkOut()
+    {
+        if (Auth::guard('web')->check()) {
+            $cartItems = Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get();
+        } else {
+            $sessionId = session()->getId();
+            $cartItems = Cart::where('session_id', $sessionId)->with('product')->get();
+        }
+        $totalAmount = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
+        return view('front.customer.checkOut', compact('cartItems','totalAmount'));
     }
 }

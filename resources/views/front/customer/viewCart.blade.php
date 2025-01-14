@@ -23,17 +23,20 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($cartItems as $index => $item)
+                                            @foreach ($cartItems as $item)
                                                 <tr>
                                                     <td><a class="remove" href="#">
                                                             <fa class="fa fa-close"></fa>
                                                         </a></td>
-                                                    <td><a href="#"><img src="img/man/polo-shirt-1.png"
+                                                    <td><a href="#"><img
+                                                                src="{{ asset('public/front_asset/img/product_img/' . ($item->product->product_image ?? 'default.png')) }}"
                                                                 alt="img"></a></td>
-                                                    <td><a class="aa-cart-title" href="#">{{ $item['name'] }}</a></td>
-                                                    <td>Rs.{{ $item['price'] }}</td>
-                                                    <td><input class="aa-cart-quantity" type="number" value="{{$item['quantity']}}"></td>
-                                                    <td>Rs.{{ $item['total'] }}</td>
+                                                    <td><a class="aa-cart-title"
+                                                            href="#">{{ $item->product->name }}</a></td>
+                                                    <td>Rs.{{ $item->product->price }}</td>
+                                                    <td><input class="aa-cart-quantity" type="number"
+                                                            value="{{ $item->quantity }}"></td>
+                                                    <td>Rs.{{ $item->quantity * $item->product->price }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -47,11 +50,11 @@
                                     <tbody>
                                         <tr>
                                             <th>Subtotal</th>
-                                            <td>$450</td>
+                                            <td>Rs.{{ $cartItems->sum(fn($item) => $item->quantity * $item->product->price) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                                <a href="#" class="aa-cart-view-btn">Proced to Checkout</a>
+                                <a href="{{route('customer.checkOut')}}" class="aa-cart-view-btn">Proced to Checkout</a>
                             </div>
                         </div>
                     </div>
