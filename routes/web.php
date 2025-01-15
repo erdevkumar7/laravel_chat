@@ -32,7 +32,7 @@ Route::get('/viewCart', [CustomerController::class, 'viewCart'])->name('customer
 
 Route::middleware('user')->group(function () {
     Route::get('/checkOut', [CustomerController::class, 'checkOut'])->name('customer.checkOut');
-    Route::any('/shippingAddress', [CustomerController::class, 'addAddress'])->name('customer.addAddress');
+    Route::any('/shippingAddress', [CustomerController::class, 'addOrEditAddress'])->name('customer.addOrEditAddress');
 
     // User Chat
     Route::get('/chat/allvendor', [ChatController::class, 'getAllVendorForChat'])->name('chat.getAllVendor');

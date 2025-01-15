@@ -12,6 +12,7 @@ use App\Models\Shipping;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
@@ -126,13 +127,11 @@ class CustomerController extends Controller
 
     public function checkOut()
     {
-        $cartItems = Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get(); 
+        $cartItems = Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get();
         $jsonPath = public_path('state_city.json');
         $stateCity = json_decode(File::get($jsonPath), true);
 
-        $shipping = Shipping::where('user_id', Auth::guard('web')->user()->id)
-        ->latest()
-        ->first();
+        $shipping = Shipping::where('user_id', Auth::guard('web')->user()->id)->latest()->first();
         if (!$shipping) {
             // Create an empty object to avoid null checks in the view
             $shipping = (object) [
@@ -150,27 +149,36 @@ class CustomerController extends Controller
         return view('front.customer.checkOut', compact('cartItems', 'totalAmount', 'shipping', 'stateCity'));
     }
 
-    public function addAddress(Request $request)
+    public function addOrEditAddress(Request $request)
     {
+        $userId = Auth::guard('web')->user()->id;
         $validateData = $request->validate([
             'name' => 'required|min:3|max:80',
             'mobile_number' => [
                 'required',
                 'regex:/^(?!.*(\d)\1{5})[6-9]\d{9}$/',
-                'unique:shipping_address,mobile_number',
+                Rule::unique('shipping_address', 'mobile_number')->ignore($userId, 'user_id'),
             ],
             'address_line_1' => 'required',
             'address_line_2' => 'required',
             'state' => 'required',
             'city' => 'required|min:2|max:80',
             'land_mark' => 'nullable',
-            'postal_code' => 'required|max:10'
+            'postal_code' => 'required|max:10',
         ]);
 
-        $validateData['user_id'] = Auth::guard('web')->user()->id;
+        $validateData['user_id'] = $userId;
+        $shipping = Shipping::where('user_id', $userId)->latest()->first();
 
-        Shipping::create($validateData);
+        if ($shipping) {
+            $shipping->update($validateData);
+            $message = 'Address updated successfully.';
+        } else {
+            Shipping::create($validateData);
+            $message = 'Address added successfully.';
+        }
 
-        // dd($validateData);
+        // Redirect back with a success message
+        return redirect()->back()->with('success', $message);
     }
 }
