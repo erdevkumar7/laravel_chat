@@ -26,8 +26,18 @@
                     <div class="checkout-area">
                         <div class="row">
                             <div class="col-md-8">
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
                                 <div class="checkout-left">
-                                    <form action="">
+                                    <form action="{{ route('customer.addAddress') }}" method="POST">
+                                        @csrf
                                         <div class="panel-group" id="accordion">
                                             <!-- Shipping Address -->
                                             <div class="panel panel-default aa-checkout-billaddress">
@@ -44,13 +54,13 @@
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <div class="aa-checkout-single-bill">
-                                                                    <input type="text" name="name"
+                                                                    <input type="text" name="name" value="{{ $shipping->name ?? ''}}"
                                                                         placeholder="Full Name*">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="aa-checkout-single-bill">
-                                                                    <input type="tel" name="phone_number"
+                                                                    <input type="tel" name="mobile_number"  value="{{ $shipping->mobile_number ?? '' }}" 
                                                                         placeholder="Phone*">
                                                                 </div>
                                                             </div>
@@ -58,7 +68,7 @@
                                                         <div class="row">
                                                             <div class="col-md-12">
                                                                 <div class="aa-checkout-single-bill">
-                                                                    <textarea cols="8" name="address_line_1" rows="3" placeholder="Address*"></textarea>
+                                                                    <textarea cols="8" name="address_line_1" rows="3" placeholder="Address*">{{ $shipping->address_line_1 ?? ''}}</textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -66,9 +76,13 @@
                                                             <div class="col-md-12">
                                                                 <div class="aa-checkout-single-bill">
                                                                     <select name="state">
-                                                                        <option value="0">Select Your State</option>
-                                                                        <option value="1">Madhya Pradesh</option>
-                                                                        <option value="2">Bihar</option>
+                                                                        <option value="" selected>--- Select State ---</option>
+                                                                        @foreach ($stateCity as $state => $districts)                        
+                                                                            <option value="{{ $state }}"                        
+                                                                                {{ old('state', $shipping->state) == $state ? 'selected' : '' }}>                        
+                                                                                {{ $state }}                        
+                                                                            </option>                        
+                                                                        @endforeach
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -76,13 +90,13 @@
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <div class="aa-checkout-single-bill">
-                                                                    <input type="text" name="addess_line_2"
-                                                                        placeholder="Appartment, Suite etc.">
+                                                                    <input type="text" name="address_line_2"
+                                                                        placeholder="Appartment, Suite etc." value="{{ $shipping->address_line_2 ?? ''}}">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="aa-checkout-single-bill">
-                                                                    <input type="text" name="city"
+                                                                    <input type="text" name="city" value="{{$shipping->city ?? ''}}"
                                                                         placeholder="City / Town*">
                                                                 </div>
                                                             </div>
@@ -90,22 +104,23 @@
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <div class="aa-checkout-single-bill">
-                                                                    <input type="text" name="land_mark"
+                                                                    <input type="text" name="land_mark" value="{{$shipping->land_mark ?? ''}}"
                                                                         placeholder="Landmark (Optional)">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="aa-checkout-single-bill">
-                                                                    <input type="text" name="postal_code"
+                                                                    <input type="text" name="postal_code" value="{{$shipping->postal_code ?? ''}}"
                                                                         placeholder="Postcode / ZIP*">
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
-                                                      
-                                                        <button type="submit" style="border:1px solid #ff6666" class="aa-secondary-btn">Edit</button>
+
+
+                                                        <button type="submit" style="border:1px solid #ff6666"
+                                                            class="aa-secondary-btn">Edit</button>
                                                         {{-- <input type="submit" value="Edit" class="aa-browse-btn"> --}}
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>

@@ -8,7 +8,9 @@ use App\Models\Product;
 use App\Models\Size;
 use App\Models\Color;
 use App\Models\Cart;
+use App\Models\Shipping;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 
 class CustomerController extends Controller
@@ -124,13 +126,51 @@ class CustomerController extends Controller
 
     public function checkOut()
     {
-        if (Auth::guard('web')->check()) {
-            $cartItems = Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get();
-        } else {
-            $sessionId = session()->getId();
-            $cartItems = Cart::where('session_id', $sessionId)->with('product')->get();
+        $cartItems = Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get(); 
+        $jsonPath = public_path('state_city.json');
+        $stateCity = json_decode(File::get($jsonPath), true);
+
+        $shipping = Shipping::where('user_id', Auth::guard('web')->user()->id)
+        ->latest()
+        ->first();
+        if (!$shipping) {
+            // Create an empty object to avoid null checks in the view
+            $shipping = (object) [
+                'name' => '',
+                'mobile_number' => '',
+                'address_line_1' => '',
+                'address_line_2' => '',
+                'land_mark' => '',
+                'state' => '',
+                'city' => '',
+                'postal_code' => '',
+            ];
         }
         $totalAmount = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
-        return view('front.customer.checkOut', compact('cartItems','totalAmount'));
+        return view('front.customer.checkOut', compact('cartItems', 'totalAmount', 'shipping', 'stateCity'));
+    }
+
+    public function addAddress(Request $request)
+    {
+        $validateData = $request->validate([
+            'name' => 'required|min:3|max:80',
+            'mobile_number' => [
+                'required',
+                'regex:/^(?!.*(\d)\1{5})[6-9]\d{9}$/',
+                'unique:shipping_address,mobile_number',
+            ],
+            'address_line_1' => 'required',
+            'address_line_2' => 'required',
+            'state' => 'required',
+            'city' => 'required|min:2|max:80',
+            'land_mark' => 'nullable',
+            'postal_code' => 'required|max:10'
+        ]);
+
+        $validateData['user_id'] = Auth::guard('web')->user()->id;
+
+        Shipping::create($validateData);
+
+        // dd($validateData);
     }
 }
