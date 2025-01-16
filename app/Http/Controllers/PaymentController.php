@@ -11,7 +11,9 @@ use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
-use App\Models\PaymentDetail;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
@@ -38,15 +40,15 @@ class PaymentController extends Controller
 
     public function createPayment(Request $request)
     {
-        // if()      
-
-        // $price = $request->total_amount;
-        $price = 10;
+        $priceInInr = $request->total_amount;
+        $exchangeRate = 0.012; // Example: 1 INR = 0.012 USD
+        $priceInUsd = $priceInInr * $exchangeRate;
+        // dd($priceInUsd);
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
 
         $amount = new Amount();
-        $amount->setTotal($price);
+        $amount->setTotal(number_format($priceInUsd, 2));
         $amount->setCurrency("USD");
 
         $transaction = new Transaction();
@@ -75,30 +77,48 @@ class PaymentController extends Controller
     {
         $paymentId = $request->paymentId;
         $payerId = $request->PayerID;
-    
+
         $payment = Payment::get($paymentId, $this->apiContext);
-    
+
         $execution = new PaymentExecution();
         $execution->setPayerId($payerId);
-    
+
         try {
             $result = $payment->execute($execution, $this->apiContext);
-            if ($result->getState() === 'approved') {                          
-                // Save payment details in payments table
-                PaymentDetail::create([
-                    'user_id' => Auth::guard('web')->user()->id,
+            if ($result->getState() === 'approved') {
+                $userId = Auth::guard('web')->user()->id;
+
+                $cartItems = Cart::where('user_id', $userId)->with('product')->get();
+                if ($cartItems->isEmpty()) {
+                    return back()->withError('Cart is empty. Please try again.');
+                }
+                // Save order and payment details
+                $order = Order::create([
+                    'user_id' => $userId,
                     'paypal_payment_id' => $result->getId(),
-                    'status' => $result->getState(),
-                    'amount' => $result->transactions[0]->getAmount()->getTotal(),
+                    'total_amount' => $result->transactions[0]->getAmount()->getTotal(),
                     'currency' => $result->transactions[0]->getAmount()->getCurrency(),
+                    'payment_status' => $result->getState(),
+                    'order_status' => 'completed', // Order status
                 ]);
+
+                foreach ($cartItems as $cartItem) {
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $cartItem->product->id,
+                        'quantity' => $cartItem->quantity,
+                        'price' => $cartItem->product->price,
+                    ]);
+                }
+                // Clear the cart
+                Cart::where('user_id', $userId)->delete();
                 // \Log::info('Payment Result: ',  (array)$result->transactions[0]->getAmount()->getCurrency());  
                 return view('front.customer.paymentSuccess');
             }
         } catch (\Exception $ex) {
             return back()->withError('Payment execution failed.');
         }
-    
+
         return back()->withError('Payment failed.');
     }
 
