@@ -14,6 +14,7 @@ use PayPal\Auth\OAuthTokenCredential;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
+use App\Models\Shipping;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
@@ -40,6 +41,13 @@ class PaymentController extends Controller
 
     public function createPayment(Request $request)
     {
+        $userId = Auth::guard('web')->user()->id;
+        $shipping = Shipping::where('user_id', $userId)->first();
+        if(!$shipping){
+            return back()->withErrors([
+                'empty_data' => 'You have not added Address, please add the Address!',
+            ])->withInput();
+        }
         $priceInInr = $request->total_amount;
         $exchangeRate = 0.012; // Example: 1 INR = 0.012 USD
         $priceInUsd = $priceInInr * $exchangeRate;

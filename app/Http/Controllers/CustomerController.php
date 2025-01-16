@@ -128,6 +128,9 @@ class CustomerController extends Controller
     public function checkOut()
     {
         $cartItems = Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get();
+        if ($cartItems->isEmpty()) {
+            return back()->withError('Cart is empty. Please try again.');
+        }
         $jsonPath = public_path('state_city.json');
         $stateCity = json_decode(File::get($jsonPath), true);
 

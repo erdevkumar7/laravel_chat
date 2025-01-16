@@ -1,6 +1,12 @@
 @extends('front.customer.layout')
 @section('title', 'viewCart')
-
+@push('css')
+<style>
+    #cart-view .cart-view-area{
+        padding-bottom: 50px;
+    }
+</style>
+@endpush
 @section('content')
     <!-- Cart view section -->
     <section id="cart-view">
@@ -8,7 +14,23 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="cart-view-area">
+                        @if ($cartItems->isEmpty())
                         <div class="cart-view-table">
+                            <div class="cart-view-total">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Your Cart Empty</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <a href="{{route('customer.getAllProduct')}}" class="aa-cart-view-btn">Go for Shopping</a>
+                            </div>
+                        </div>
+                        @else
+                        <div class="cart-view-table">                        
                             <form action="">
                                 <div class="table-responsive">
                                     <table class="table">
@@ -57,6 +79,7 @@
                                 <a href="{{route('customer.checkOut')}}" class="aa-cart-view-btn">Proced to Checkout</a>
                             </div>
                         </div>
+                        @endif                      
                     </div>
                 </div>
             </div>
