@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MasterController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\ProductController;
@@ -29,6 +30,11 @@ Route::get('/allProduct', [CustomerController::class, 'getAllProduct'])->name('c
 Route::get('/productDetail/{id}', [CustomerController::class, 'getProductDetail'])->name('customer.getProductDetail');
 Route::post('/productAddToCart', [CustomerController::class, 'productAddToCart'])->name('customer.productAddToCart');
 Route::get('/viewCart', [CustomerController::class, 'viewCart'])->name('customer.viewCart');
+
+Route::post('/payment/create', [PaymentController::class, 'createPayment'])->name('payment.create');
+Route::get('/payment/execute', [PaymentController::class, 'executePayment'])->name('payment.execute');
+Route::get('/payment/cancel', [PaymentController::class, 'cancelPayment'])->name('payment.cancel');
+
 
 Route::middleware('user')->group(function () {
     Route::get('/checkOut', [CustomerController::class, 'checkOut'])->name('customer.checkOut');

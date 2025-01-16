@@ -179,50 +179,55 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="checkout-right">
-                                    <h4>Order Summary</h4>
-                                    <div class="aa-order-summary-area">
-                                        <table class="table table-responsive">
-                                            <thead>
-                                                <tr>
-                                                    <th>Product</th>
-                                                    <th>Total</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($cartItems as $item)
+                                    <form action="{{route('payment.create')}}" method="POST">
+                                        @csrf
+                                        <h4>Order Summary</h4>
+                                        <div class="aa-order-summary-area">
+                                            <table class="table table-responsive">
+                                                <thead>
                                                     <tr>
-                                                        <td>{{ $item->product->name }} <strong> x
-                                                                {{ $item->quantity }}</strong></td>
-                                                        <td>Rs.{{ $item->product->price * $item->quantity }}</td>
+                                                        <th>Product</th>
+                                                        <th>Total</th>
                                                     </tr>
-                                                @endforeach
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <th>Subtotal</th>
-                                                    <td>Rs.{{ $totalAmount }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Shipping Charge</th>
-                                                    <td>Rs.56</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Total</th>
-                                                    <td>Rs.{{ $totalAmount + 56 }}</td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                    <h4>Payment Method</h4>
-                                    <div class="aa-payment-method">
-                                        <label for="cashdelivery"><input type="radio" id="cashdelivery"
-                                                name="optionsRadios"> Cash on Delivery </label>
-                                        <label for="paypal"><input type="radio" id="paypal" name="optionsRadios"
-                                                checked> Via Paypal </label>
-                                        <img src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg"
-                                            border="0" alt="PayPal Acceptance Mark">
-                                        <input type="submit" value="Place Order" class="aa-browse-btn">
-                                    </div>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($cartItems as $item)
+                                                        <tr>
+                                                            <td>{{ $item->product->name }} <strong> x
+                                                                    {{ $item->quantity }}</strong></td>
+                                                            <td>Rs.{{ $item->product->price * $item->quantity }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>Subtotal</th>
+                                                        <td>Rs.{{ $totalAmount }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Shipping Charge</th>
+                                                        <td>Rs.56</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Total</th>
+                                                        <td>Rs.{{ $totalAmount + 56 }}</td>
+                                                        <input type="hidden" name="total_amount" value="{{ $totalAmount + 56 }}">
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <h4>Payment Method</h4>
+                                        <div class="aa-payment-method">
+                                            <label for="cashdelivery"><input type="radio" id="cashdelivery"
+                                                    name="optionsRadios"> Cash on Delivery </label>
+                                            <label for="paypal"><input type="radio" id="paypal"
+                                                    name="optionsRadios" checked> Via Paypal </label>
+                                            <img src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg"
+                                                border="0" alt="PayPal Acceptance Mark">
+                                            {{-- <a href="{{ route('paypal.checkout') }}" class="btn btn-primary">Pay with PayPal</a> --}}
+                                            <input type="submit" value="Place Order" class="aa-browse-btn">
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
