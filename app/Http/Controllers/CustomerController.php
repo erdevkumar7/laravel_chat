@@ -91,6 +91,7 @@ class CustomerController extends Controller
                 $cart->quantity = $quantity;
             }
             $cart->save();
+            $cartItems = Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get();
         } else {
             // Guest user
             $sessionId = session()->getId();
@@ -107,10 +108,20 @@ class CustomerController extends Controller
                 $cart->quantity = $quantity;
             }
             $cart->save();
+            $cartItems = Cart::where('session_id', $sessionId)->with('product')->get();
         }
 
-        return response()->json(['message' => 'Product added to cart successfully'], 201);
+        // Calculate the cart total
+        $cartTotal = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
+        $totalItemsInCart = count($cartItems);
+        return response()->json([
+            'message' => 'Product added to cart successfully',
+            'cartItems' => $cartItems,
+            'cartTotal' => $cartTotal,
+            'totalItemsInCart' => $totalItemsInCart,
+        ], 201);
     }
+
 
     public function viewCart()
     {

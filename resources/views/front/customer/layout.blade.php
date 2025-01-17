@@ -59,16 +59,17 @@
                     <div class="col-md-12">
                         <div class="aa-header-top-area">
                             <!-- start header top left -->
-                            <div class="aa-header-top-left"> 
+                            <div class="aa-header-top-left">
                                 <!-- start cellphone -->
                                 <div class="cellphone hidden-xs">
-                                    <p><span class="fa fa-phone"></span>00-62-658-658  || {{Auth::guard('web')->user()->name ?? ""}} </p>
+                                    <p><span class="fa fa-phone"></span>00-62-658-658 ||
+                                        {{ Auth::guard('web')->user()->name ?? '' }} </p>
                                 </div>
                                 <!-- / cellphone -->
                             </div>
                             <!-- / header top left -->
                             <div class="aa-header-top-right">
-                                <ul class="aa-head-top-nav-right">                                
+                                <ul class="aa-head-top-nav-right">
                                     @if (Auth::guard('web')->check())
                                         <form action="{{ route('customer.logout') }}" method="POST"
                                             id="customer-logout-form" style="display: none">
@@ -78,7 +79,7 @@
                                                 onclick="event.preventDefault(); document.getElementById('customer-logout-form').submit();">Logout</a>
                                         </li>
                                     @else
-                                        <li><a href="{{route('login')}}">Login</a></li>
+                                        <li><a href="{{ route('login') }}">Login</a></li>
                                     @endif
                                     {{-- <li><a href="" data-toggle="modal" data-target="#login-modal">Login</a></li>   --}}
                                 </ul>
@@ -101,10 +102,55 @@
                                 <!-- Text based logo -->
                                 <a href="javascript:void(0)">
                                     <span class="fa fa-shopping-cart"></span>
-                                    <p>daily<strong>Update</strong> <span>Your Shopping Partner</span></p>
-                                </a>                                
+                                    <p>daily<strong>Shop</strong> <span>Your Shopping Partner</span></p>
+                                </a>
                             </div>
                             <!-- / logo  -->
+                            <!-- cart box -->
+                            <div class="aa-cartbox">
+                                <a class="aa-cart-link" href="{{ route('customer.viewCart') }}">
+                                    <span class="fa fa-shopping-basket"></span>
+                                    <span class="aa-cart-title">SHOPPING CART</span>
+                                    <span class="aa-cart-notify">{{ $totalItemsInCart }}</span>
+                                </a>
+
+                                @if ($cartItems->isEmpty())
+                                    <div class="aa-cartbox-summary">
+                                        <p>Your cart is empty.</p>
+                                        <a class="aa-cartbox-checkout aa-primary-btn"
+                                            href="{{ route('customer.getAllProduct') }}">Shop now</a>
+                                    </div>
+                                @else
+                                    <div class="aa-cartbox-summary">
+                                        <ul>
+                                            @foreach ($cartItems as $item)
+                                                <li>
+                                                    <a class="aa-cartbox-img" href="#"><img
+                                                            src="{{ asset('/public/front_asset/img/product_img/' . ($item->product->product_image ?? 'default.png')) }}"
+                                                            alt="{{ $item->product->name }}"></a>
+                                                    <div class="aa-cartbox-info">
+                                                        <h4><a href="#">{{ $item->product->name }}</a></h4>
+                                                        <p>{{ $item->quantity }} x ${{ $item->product->price }}</p>
+                                                    </div>
+                                                    <a class="aa-remove-product" href=""><span
+                                                            class="fa fa-times"></span></a>
+                                                </li>
+                                                <li>
+                                                    <span class="aa-cartbox-total-title">
+                                                        Total
+                                                    </span>
+                                                    <span class="aa-cartbox-total-price">
+                                                        ${{ $cartTotal }}
+                                                    </span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                        <a class="aa-cartbox-checkout aa-primary-btn"
+                                            href="{{ route('customer.viewCart') }}">View/Checkout</a>
+                                    </div>
+                                @endif
+                            </div>
+                            <!-- / cart box -->
                             <!-- search box -->
                             <div class="aa-search-box">
                                 <form action="">
@@ -159,7 +205,7 @@
                                         </ul>
                                     </li>
                                 </ul>
-                            </li>                       
+                            </li>
                             <li><a href="javascript:void(0)">Contact</a></li>
                             <li><a href="#">Pages <span class="caret"></span></a>
                                 <ul class="dropdown-menu">

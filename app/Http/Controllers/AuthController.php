@@ -139,16 +139,18 @@ class AuthController extends Controller
         $userId = Auth::guard('web')->user()->id;    
         // Fetch guest cart items
         $guestCartItems = Cart::where('session_id', $oldSessionId)->get();
-    
         foreach ($guestCartItems as $item) {
             $existingCartItem = Cart::where('user_id', $userId)
-                ->where('product_id', $item->product_id)
-                ->first();
-    
+            ->where('product_id', $item->product_id)
+            ->first();          
+            
+            // dd($guestCartItems);
+
             if ($existingCartItem) {
                 // Merge quantities
                 $existingCartItem->quantity += $item->quantity;
                 $existingCartItem->save();
+                $guestCartItems->each->delete();
             } else {
                 // Assign guest cart item to user
                 $item->user_id = $userId;

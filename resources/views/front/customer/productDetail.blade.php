@@ -104,7 +104,9 @@
                                                         _token: "{{ csrf_token() }}",
                                                     },
                                                     success: function(response) {
-                                                        alert(response.message);
+                                                        if(response.message){
+                                                            alert(response.message);
+                                                        }
                                                     },
                                                     error: function(xhr) {
                                                         alert('Something went wrong. Please try again.');
