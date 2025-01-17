@@ -135,15 +135,15 @@
                                                     <a class="aa-remove-product" href=""><span
                                                             class="fa fa-times"></span></a>
                                                 </li>
-                                                <li>
-                                                    <span class="aa-cartbox-total-title">
-                                                        Total
-                                                    </span>
-                                                    <span class="aa-cartbox-total-price">
-                                                        ${{ $cartTotal }}
-                                                    </span>
-                                                </li>
                                             @endforeach
+                                            <li>
+                                                <span class="aa-cartbox-total-title">
+                                                    Total
+                                                </span>
+                                                <span class="aa-cartbox-total-price">
+                                                    ${{ $cartTotal }}
+                                                </span>
+                                            </li>
                                         </ul>
                                         <a class="aa-cartbox-checkout aa-primary-btn"
                                             href="{{ route('customer.viewCart') }}">View/Checkout</a>
