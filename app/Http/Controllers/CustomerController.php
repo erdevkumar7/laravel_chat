@@ -122,6 +122,44 @@ class CustomerController extends Controller
         ], 201);
     }
 
+    public function productRemoveFromCart(Request $request)
+    {
+        $cartId = $request->cart_id;
+
+        if (Auth::guard('web')->check()) {
+            // Remove for logged-in user
+            $cartItem = Cart::where('id', $cartId)
+                ->where('user_id', Auth::guard('web')->user()->id)
+                ->first();
+        } else {
+            // Remove for guest user
+            $sessionId = session()->getId();
+            $cartItem = Cart::where('id', $cartId)
+                ->where('session_id', $sessionId)
+                ->first();
+        }
+
+        if ($cartItem) {
+            $cartItem->delete();
+
+            $cartItems = Auth::guard('web')->check()
+                ? Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get()
+                : Cart::where('session_id', session()->getId())->with('product')->get();
+
+            $cartTotal = $cartItems->sum(function ($item) {
+                return $item->quantity * $item->product->price;
+            });
+            return response()->json([
+                'message' => 'Product removed from cart successfully',
+                'cartItems' => $cartItems,
+                'cartTotal' => $cartTotal,
+                'totalItemsInCart' => count($cartItems),
+            ]);
+        }
+
+        return response()->json(['message' => 'Product not found in cart'], 404);
+    }
+
 
     public function viewCart()
     {

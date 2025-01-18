@@ -88,71 +88,7 @@
                                             <a class="aa-add-to-cart-btn product-add-to-cart" href="javascript:void(0)"
                                                 data-product-id="{{ $product->id }}">Add To Cart</a>
                                             <a class="aa-add-to-cart-btn" href="#">Wishlist</a>
-                                        </div>
-
-                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Ensure jQuery is included -->
-                                        <script>
-                                            $(document).on('click', '.product-add-to-cart', function() {
-                                                const productId = $(this).data('product-id');
-                                                const quantity = $('#productQuantityId').val();
-                                                $.ajax({
-                                                    url: "{{ route('customer.productAddToCart') }}",
-                                                    method: 'POST',
-                                                    data: {
-                                                        product_id: productId,
-                                                        quantity: quantity,
-                                                        _token: "{{ csrf_token() }}",
-                                                    },
-                                                    success: function(response) {
-                                                        if (response.message) {
-                                                            alert(response.message);
-
-                                                        }
-                                                        // Update the cart popup
-                                                        let cartHtml = '';
-                                                        if (response.cartItems.length === 0) {
-                                                            cartHtml = `
-		                                                       <div class="aa-cartbox-summary">
-			                                                       	<p>Your cart is empty.</p>
-			                                                      	<a class="aa-cartbox-checkout aa-primary-btn" href="/shop">Shop now</a>
-		                                                       </div>`;
-                                                        } else {
-                                                            cartHtml = `<div class="aa-cartbox-summary">
-			                                                      	<ul>`;
-                                                            response.cartItems.forEach(item => {
-                                                                const productPic =
-                                                                    `{{ asset('/public/front_asset/img/product_img/${item.product.product_image}') }}`;
-                                                                cartHtml += `
-		                                                        		  <li>
-		                                                      			 <a class="aa-cartbox-img" href="#"><img src="${productPic}" alt="${item.product.name}"></a>
-					                                                       <div class="aa-cartbox-info">
-					                                                    	  <h4><a href="#">${item.product.name}</a></h4>
-						                                                      <p>${item.quantity} x $${item.product.price}</p>
-				                                                      	 </div>
-					                                                        <a class="aa-remove-product" href="#" data-cart-id="${item.id}"><span class="fa fa-times"></span></a>
-			                                                      	</li>`;
-                                                            });
-
-                                                            cartHtml += `
-			                                                         	<li>
-					                                                        <span class="aa-cartbox-total-title">Total</span>
-				                                                         	 <span class="aa-cartbox-total-price">$${response.cartTotal}</span>
-			                                                            	</li>
-		                                                              </ul>
-		                                                           <a class="aa-cartbox-checkout aa-primary-btn" href="{{route('customer.viewCart')}}">View/Checkout</a>
-	                                                                     </div>`;
-                                                        }
-																		  // Update Cart
-                                                        $('.aa-cartbox-summary').html(cartHtml);
-                                                        // Update the total items in cart badge
-                                                        $('.aa-cart-notify').text(response.totalItemsInCart);
-                                                    },
-                                                    error: function(xhr) {
-                                                        alert('Something went wrong. Please try again.');
-                                                    },
-                                                });
-                                            });
-                                        </script>
+                                        </div>                                       
                                     </div>
                                 </div>
                             </div>
@@ -281,3 +217,69 @@
     <!-- / product category -->
 
 @endsection
+
+@push('js')
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Ensure jQuery is included --> --}}
+<script>
+    $(document).on('click', '.product-add-to-cart', function() {
+        const productId = $(this).data('product-id');
+        const quantity = $('#productQuantityId').val();
+        $.ajax({
+            url: "{{ route('customer.productAddToCart') }}",
+            method: 'POST',
+            data: {
+                product_id: productId,
+                quantity: quantity,
+                _token: "{{ csrf_token() }}",
+            },
+            success: function(response) {
+                if (response.message) {
+                    alert(response.message);
+
+                }
+                // Update the cart popup
+                let cartHtml = '';
+                if (response.cartItems.length === 0) {
+                    cartHtml = `
+                       <div class="aa-cartbox-summary">
+                               <p>Your cart is empty.</p>
+                              <a class="aa-cartbox-checkout aa-primary-btn" href="/shop">Shop now</a>
+                       </div>`;
+                } else {
+                    cartHtml = `<div class="aa-cartbox-summary">
+                              <ul>`;
+                    response.cartItems.forEach(item => {
+                        const productPic =
+                            `{{ asset('/public/front_asset/img/product_img/${item.product.product_image}') }}`;
+                        cartHtml += `
+                                  <li>
+                                   <a class="aa-cartbox-img" href="#"><img src="${productPic}" alt="${item.product.name}"></a>
+                                   <div class="aa-cartbox-info">
+                                      <h4><a href="#">${item.product.name}</a></h4>
+                                      <p>${item.quantity} x $${item.product.price}</p>
+                                   </div>
+                                    <a class="aa-remove-product" href="#" data-cart-id="${item.id}"><span class="fa fa-times"></span></a>
+                              </li>`;
+                    });
+
+                    cartHtml += `
+                                 <li>
+                                    <span class="aa-cartbox-total-title">Total</span>
+                                      <span class="aa-cartbox-total-price">$${response.cartTotal}</span>
+                                    </li>
+                              </ul>
+                           <a class="aa-cartbox-checkout aa-primary-btn" href="{{route('customer.viewCart')}}">View/Checkout</a>
+                                 </div>`;
+                }
+                                  // Update Cart
+                $('.aa-cartbox-summary').html(cartHtml);
+                // Update the total items in cart badge
+                $('.aa-cart-notify').text(response.totalItemsInCart);
+            },
+            error: function(xhr) {
+                alert('Something went wrong. Please try again.');
+            },
+        });
+    });
+</script>
+@endpush
