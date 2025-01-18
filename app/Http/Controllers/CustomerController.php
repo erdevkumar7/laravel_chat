@@ -149,10 +149,14 @@ class CustomerController extends Controller
             $cartTotal = $cartItems->sum(function ($item) {
                 return $item->quantity * $item->product->price;
             });
+          
+            $html = view('front.partials.cartView', compact('cartItems', 'cartTotal'))->render();
             return response()->json([
+                'success' =>true,
                 'message' => 'Product removed from cart successfully',
-                'cartItems' => $cartItems,
-                'cartTotal' => $cartTotal,
+                'html' => $html,
+                // 'cartItems' => $cartItems,
+                // 'cartTotal' => $cartTotal,
                 'totalItemsInCart' => count($cartItems),
             ]);
         }

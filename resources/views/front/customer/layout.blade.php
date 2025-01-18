@@ -114,7 +114,7 @@
                                     <span class="aa-cart-notify">{{ $totalItemsInCart }}</span>
                                 </a>
 
-                                @if ($cartItems->isEmpty())
+                                {{-- @if ($cartItems->isEmpty())
                                     <div class="aa-cartbox-summary">
                                         <p>Your cart is empty.</p>
                                         <a class="aa-cartbox-checkout aa-primary-btn"
@@ -148,7 +148,7 @@
                                         <a class="aa-cartbox-checkout aa-primary-btn"
                                             href="{{ route('customer.viewCart') }}">View/Checkout</a>
                                     </div>
-                                @endif
+                                @endif --}}
                             </div>
                             <!-- / cart box -->
                             <!-- search box -->
