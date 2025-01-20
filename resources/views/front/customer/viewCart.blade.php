@@ -53,15 +53,24 @@
                                                                 data-cart-id="{{ $item->id }}">
                                                                 <fa class="fa fa-close"></fa>
                                                             </a></td>
-                                                        <td><a href="{{route('customer.getProductDetail', $item->product->id)}}"><img
+                                                        <td><a
+                                                                href="{{ route('customer.getProductDetail', $item->product->id) }}"><img
                                                                     src="{{ asset('public/front_asset/img/product_img/' . ($item->product->product_image ?? 'default.png')) }}"
                                                                     alt="img"></a></td>
                                                         <td><a class="aa-cart-title"
-                                                                href="{{route('customer.getProductDetail', $item->product->id)}}">{{ $item->product->name }}</a></td>
-                                                        <td>Rs.{{ $item->product->price }}</td>
-                                                        <td><input class="aa-cart-quantity" type="number"
-                                                                value="{{ $item->quantity }}"></td>
-                                                        <td>Rs.{{ $item->quantity * $item->product->price }}</td>
+                                                                href="{{ route('customer.getProductDetail', $item->product->id) }}">{{ $item->product->name }}</a>
+                                                        </td>
+                                                        <td>Rs.<span class="product-price"
+                                                                data-price="{{ $item->product->price }}">{{ $item->product->price }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <input class="aa-cart-quantity" type="number"
+                                                                value="{{ $item->quantity }}"
+                                                                data-cart-id="{{ $item->id }}">
+                                                        </td>
+                                                        <td>Rs.<span
+                                                                class="product-total-price">{{ $item->quantity * $item->product->price }}</span>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -75,7 +84,7 @@
                                         <tbody>
                                             <tr>
                                                 <th>Subtotal</th>
-                                                <td>Rs.{{ $cartItems->sum(fn($item) => $item->quantity * $item->product->price) }}
+                                                <td>Rs.<span id="cartTotalAmount">{{$cartItems->sum(fn($item) => $item->quantity * $item->product->price) }}</span>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -95,6 +104,7 @@
 
 @push('js')
     <script>
+        // remove product
         $(document).on('click', '.product-remove-from-cart', function(e) {
             e.preventDefault();
             const cartId = $(this).data('cart-id');
@@ -113,13 +123,68 @@
 
                         alert(response.message);
                     }
-
-
                 },
                 error: function(xhr) {
                     alert(xhr.responseJSON.message || 'An error occured');
                 }
             });
         });
+    </script>
+
+    <script>
+        // Update Product
+        $(document).on('input', '.aa-cart-quantity', function() {
+            const $quantityInput = $(this);
+            const quantity = parseInt($quantityInput.val()) || 0; // Get quantity or default to 0
+            const price = parseFloat($quantityInput.closest('tr').find('.product-price').data(
+                'price')); // Get price from data attribute
+            const $totalPriceElement = $quantityInput.closest('tr').find(
+                '.product-total-price'); // Target total price cell
+
+            // Ensure quantity doesn't go negative
+            if (quantity < 1) {
+                $quantityInput.val(1); // Set minimum value to 1
+                return;
+            }
+            // Optimistically update the total price for this product
+        const totalPrice = quantity * price;
+        $totalPriceElement.text(`${totalPrice}`);
+
+        // Optimistically update the cart total amount
+        let updatedCartTotal = 0;
+        $('.product-total-price').each(function () {
+            updatedCartTotal += parseFloat($(this).text().replace('Rs.', ''));
+        });
+        $('#cartTotalAmount').text(`${updatedCartTotal}`);
+
+            // Calculate new total
+            // const totalPrice = quantity * price;
+            // $totalPriceElement.text(`${totalPrice}`); 
+
+            // Optionally, make an AJAX call to update the server
+            updateCart(quantity, $quantityInput.data('cart-id'));
+            // console.log('quantityInput', $quantityInput.data('cart-id'));
+        });
+
+        function updateCart(quantity, cartId) {
+            $.ajax({
+                url: "{{ route('cart.update') }}",
+                method: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    cart_id: cartId,
+                    quantity: quantity,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#cartTotalAmount').text(response.totalAmount);
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.message || 'An error occured');
+                }
+            });
+        }
     </script>
 @endpush

@@ -149,10 +149,10 @@ class CustomerController extends Controller
             $cartTotal = $cartItems->sum(function ($item) {
                 return $item->quantity * $item->product->price;
             });
-          
+
             $html = view('front.partials.cartView', compact('cartItems', 'cartTotal'))->render();
             return response()->json([
-                'success' =>true,
+                'success' => true,
                 'message' => 'Product removed from cart successfully',
                 'html' => $html,
                 // 'cartItems' => $cartItems,
@@ -162,6 +162,31 @@ class CustomerController extends Controller
         }
 
         return response()->json(['message' => 'Product not found in cart'], 404);
+    }
+
+    public function updateCart(Request $request)
+    {
+        $cartId = $request->cart_id;
+        $quantity = $request->quantity;
+        $cartItem = Cart::find($cartId);
+
+        if (!$cartItem) {
+            return response()->json(['success' => false, 'message' => 'Cart item not found.']);
+        }
+        $cartItem->quantity = max(1, $quantity); // Ensure quantity is at least 1
+        $cartItem->save();
+        // Calculate updated 
+        $cartItems = Auth::guard('web')->check()
+                ? Cart::where('user_id', Auth::guard('web')->user()->id)->with('product')->get()
+                : Cart::where('session_id', session()->getId())->with('product')->get();
+
+        $totalAmount = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
+        return response()->json([
+            'success' => true,
+            'message' => 'Cart updated successfully.',
+            // 'cartItems' => $cartItems,
+            'totalAmount' => $totalAmount,
+        ]);
     }
 
 
@@ -175,7 +200,8 @@ class CustomerController extends Controller
             $cartItems = Cart::where('session_id', $sessionId)->with('product')->get();
         }
         //    dd($cartItems);
-        return view('front.customer.viewCart', compact('cartItems'));
+       
+        return view('front.customer.viewCart', compact('cartItems',));
     }
 
     public function checkOut()

@@ -31,6 +31,7 @@ Route::get('/productDetail/{id}', [CustomerController::class, 'getProductDetail'
 Route::post('/productAddToCart', [CustomerController::class, 'productAddToCart'])->name('customer.productAddToCart');
 Route::any('/productRemoveFromCart', [CustomerController::class, 'productRemoveFromCart'])->name('customer.productRemoveFromCart');
 Route::get('/viewCart', [CustomerController::class, 'viewCart'])->name('customer.viewCart');
+Route::post('/update-cart', [CustomerController::class, 'updateCart'])->name('cart.update');
 
 Route::post('/payment/create', [PaymentController::class, 'createPayment'])->name('payment.create');
 Route::get('/payment/execute', [PaymentController::class, 'executePayment'])->name('payment.execute');
