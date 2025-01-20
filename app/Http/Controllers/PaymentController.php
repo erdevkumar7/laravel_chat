@@ -104,10 +104,10 @@ class PaymentController extends Controller
                 $order = Order::create([
                     'user_id' => $userId,
                     'paypal_payment_id' => $result->getId(),
-                    'total_amount' => $result->transactions[0]->getAmount()->getTotal(),
+                    'total_amount' => $result->transactions[0]->getAmount()->getTotal(), // paypal amount
                     'currency' => $result->transactions[0]->getAmount()->getCurrency(),
                     'payment_status' => $result->getState(),
-                    'order_status' => 'completed', // Order status
+                    'order_status' => 'pending', // first time Order is pending after delevered success
                 ]);
 
                 foreach ($cartItems as $cartItem) {

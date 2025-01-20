@@ -184,7 +184,7 @@ class AuthController extends Controller
             // Merge guest cart to logged-in user's cart
             $this->mergeGuestCartToUserCart($oldSessionId);
             // return redirect()->route('customer.dashboard');
-            return redirect()->intended(route('customer.checkOut')); 
+            return redirect()->intended(route('customer.getAllProduct')); 
         }
 
         return back()->withErrors([

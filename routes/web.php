@@ -11,6 +11,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +47,9 @@ Route::middleware('user')->group(function () {
     Route::get('/chat/allvendor', [ChatController::class, 'getAllVendorForChat'])->name('chat.getAllVendor');
   
     Route::get('/chat/{vendor_id}/send', [ChatController::class, 'getCustomerChat'])->name('customer.chat.get');
-    Route::post('/chat/send', [ChatController::class, 'sendCustomerMessage'])->name('customer.sendMessage');   
+    Route::post('/chat/send', [ChatController::class, 'sendCustomerMessage'])->name('customer.sendMessage'); 
+    
+    Route::any('/viewOrder/{id?}', [OrderController::class, 'viewOrder'])->name('customer.viewOrder');
 
 });
 // Vendor Chat

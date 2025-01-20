@@ -66,7 +66,8 @@
                                                         <td>
                                                             <input class="aa-cart-quantity" type="number"
                                                                 value="{{ $item->quantity }}"
-                                                                data-cart-id="{{ $item->id }}">
+                                                                data-cart-id="{{ $item->id }}" min="1"
+                                                                max="6">
                                                         </td>
                                                         <td>Rs.<span
                                                                 class="product-total-price">{{ $item->quantity * $item->product->price }}</span>
@@ -84,7 +85,8 @@
                                         <tbody>
                                             <tr>
                                                 <th>Subtotal</th>
-                                                <td>Rs.<span id="cartTotalAmount">{{$cartItems->sum(fn($item) => $item->quantity * $item->product->price) }}</span>
+                                                <td>Rs.<span
+                                                        id="cartTotalAmount">{{ $cartItems->sum(fn($item) => $item->quantity * $item->product->price) }}</span>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -135,32 +137,36 @@
         // Update Product
         $(document).on('input', '.aa-cart-quantity', function() {
             const $quantityInput = $(this);
-            const quantity = parseInt($quantityInput.val()) || 0; // Get quantity or default to 0
+            const min = parseInt($quantityInput.attr('min')) || 1; // Minimum quantity
+            const max = parseInt($quantityInput.attr('max')) || 6; // Maximum quantity
+            let quantity = parseInt($quantityInput.val()) || 0;
+
             const price = parseFloat($quantityInput.closest('tr').find('.product-price').data(
                 'price')); // Get price from data attribute
             const $totalPriceElement = $quantityInput.closest('tr').find(
                 '.product-total-price'); // Target total price cell
 
-            // Ensure quantity doesn't go negative
-            if (quantity < 1) {
-                $quantityInput.val(1); // Set minimum value to 1
-                return;
+            // Enforce minimum and maximum limits
+            if (quantity < min) {
+                quantity = min;
+                $quantityInput.val(quantity);
             }
+
+            if (quantity > max) {
+                quantity = max;
+                $quantityInput.val(quantity);
+            }
+
             // Optimistically update the total price for this product
-        const totalPrice = quantity * price;
-        $totalPriceElement.text(`${totalPrice}`);
+            const totalPrice = quantity * price;
+            $totalPriceElement.text(`${totalPrice}`);
 
-        // Optimistically update the cart total amount
-        let updatedCartTotal = 0;
-        $('.product-total-price').each(function () {
-            updatedCartTotal += parseFloat($(this).text().replace('Rs.', ''));
-        });
-        $('#cartTotalAmount').text(`${updatedCartTotal}`);
-
-            // Calculate new total
-            // const totalPrice = quantity * price;
-            // $totalPriceElement.text(`${totalPrice}`); 
-
+            // Optimistically update the cart total amount
+            let updatedCartTotal = 0;
+            $('.product-total-price').each(function() {
+                updatedCartTotal += parseFloat($(this).text().replace('Rs.', ''));
+            });
+            $('#cartTotalAmount').text(`${updatedCartTotal}`);
             // Optionally, make an AJAX call to update the server
             updateCart(quantity, $quantityInput.data('cart-id'));
             // console.log('quantityInput', $quantityInput.data('cart-id'));
