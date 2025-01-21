@@ -73,7 +73,7 @@
                                                                         src="{{ asset('public/front_asset/img/product_img/' . ($item->product->product_image ?? 'default.png')) }}"
                                                                         alt="img"></a></td>
                                                             <td><a class="aa-cart-title"
-                                                                    href="{{ route('customer.getProductDetail', $item->product->id) }}">{{ $item->product->name }}</a>
+                                                                    href="{{ route('customer.viewOrderItem', $item->id) }}">{{ $item->product->name }}</a>
                                                             </td>
                                                             <td>Rs.<span class="product-price"
                                                                     data-price="{{ $item->product->price }}">{{ $item->product->price }}</span>

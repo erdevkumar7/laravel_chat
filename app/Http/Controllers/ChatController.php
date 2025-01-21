@@ -43,8 +43,7 @@ class ChatController extends Controller
 
     public function getCustomerChat($vendor_id)
     {
-        $vendor = Vendor::findOrFail($vendor_id);
-   
+        $vendor = Vendor::findOrFail($vendor_id);   
         $common_chat_id = $this->generateCommonChatId(Auth::guard('web')->user()->id, $vendor_id);
         // dd($common_chat_id);
         $messages = Chat::where('user_id', Auth::guard('web')->user()->id)
@@ -76,8 +75,7 @@ class ChatController extends Controller
     // Vendor Chat Functionality *********************************************************************
     public function getVendorChat($user_id)
     {
-        $user = User::findOrFail($user_id);
-     
+        $user = User::findOrFail($user_id);     
         $vendor = auth('vendor')->user();
         $common_chat_id = $this->generateCommonChatId($user_id, $vendor->id);
         // dd($common_chat_id);
