@@ -71,6 +71,7 @@
                             <div class="aa-header-top-right">
                                 <ul class="aa-head-top-nav-right">
                                     @if (Auth::guard('web')->check())
+                                        <li class="hidden-xs"><a href="{{route('customer.viewOrder')}}">My Orders</a></li>
                                         <form action="{{ route('customer.logout') }}" method="POST"
                                             id="customer-logout-form" style="display: none">
                                             @csrf

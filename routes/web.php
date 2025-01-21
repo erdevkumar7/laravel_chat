@@ -50,6 +50,7 @@ Route::middleware('user')->group(function () {
     Route::post('/chat/send', [ChatController::class, 'sendCustomerMessage'])->name('customer.sendMessage'); 
     
     Route::any('/viewOrder/{id?}', [OrderController::class, 'viewOrder'])->name('customer.viewOrder');
+    Route::any('/viewOrderItem/{order_itemsId}', [OrderController::class, 'viewOrderItem'])->name('customer.viewOrderItem');
 
 });
 // Vendor Chat
