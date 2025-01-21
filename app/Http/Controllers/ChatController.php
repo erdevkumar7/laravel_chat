@@ -38,15 +38,13 @@ class ChatController extends Controller
     // Customer Chat Functionality *********************************************************************
     private function generateCommonChatId($userId, $vendorId)
     {     
-        return $userId . '-' . $vendorId;
+        return 'c_id'. $userId . '-' . 'v_id' . $vendorId;
     }
 
     public function getCustomerChat($vendor_id)
     {
-        $vendor = Vendor::find($vendor_id);
-        if (!$vendor) {
-            return redirect()->back()->with('error', 'Vendor not found.');
-        }
+        $vendor = Vendor::findOrFail($vendor_id);
+   
         $common_chat_id = $this->generateCommonChatId(Auth::guard('web')->user()->id, $vendor_id);
         // dd($common_chat_id);
         $messages = Chat::where('user_id', Auth::guard('web')->user()->id)
@@ -65,6 +63,8 @@ class ChatController extends Controller
             'vendor_id' => $request->vendor_id,
             'common_chat_id' => $this->generateCommonChatId(Auth::guard('web')->user()->id, $request->vendor_id),
             'sender_id' => Auth::guard('web')->user()->id,
+            'receiver_id' => $request->vendor_id,
+            'sender' => 'customer',
             'message' => $request->message,
         ]);
 
@@ -76,10 +76,8 @@ class ChatController extends Controller
     // Vendor Chat Functionality *********************************************************************
     public function getVendorChat($user_id)
     {
-        $user = User::find($user_id);
-        if (!$user) {
-            return redirect()->back()->with('error', 'User not found!');
-        }
+        $user = User::findOrFail($user_id);
+     
         $vendor = auth('vendor')->user();
         $common_chat_id = $this->generateCommonChatId($user_id, $vendor->id);
         // dd($common_chat_id);
@@ -96,6 +94,8 @@ class ChatController extends Controller
             'vendor_id' => Auth::guard('vendor')->user()->id,
             'common_chat_id' => $this->generateCommonChatId($request->user_id, Auth::guard('vendor')->user()->id),
             'sender_id' => Auth::guard('vendor')->user()->id,
+            'receiver_id' => $request->user_id,
+            'sender' => 'vendor',
             'message' => $request->message,
         ]);
 

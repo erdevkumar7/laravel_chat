@@ -33,8 +33,8 @@
                 "{{ asset('public/front_asset/img/vendor_profile/' . ($vendor->profile_pic ?? 'default.png')) }}";
             const customerProfilePic =
                 "{{ asset('public/front_asset/img/customer_profile/' . (Auth::guard('web')->user()->profile_pic ?? 'default.png')) }}";
-            const messageSender = data.sender_id == userId ? 'You' : 'Vendor';
-            const profilePic = data.sender_id == userId ? customerProfilePic : vendorProfilePic;    
+            const messageSender = data.sender == 'customer' ? 'You' : 'Vendor';
+            const profilePic = data.sender == 'customer' ? customerProfilePic : vendorProfilePic;    
 
             const message = `
         <li> 
@@ -90,7 +90,7 @@
                                                     <li>
                                                         <div class="media">
                                                             <div class="media-left">
-                                                                @if ($message->sender_id == Auth::guard('web')->user()->id)
+                                                                @if ($message->sender == 'customer')
                                                                     <img class="media-object news-img"
                                                                         src="{{ asset('public/front_asset/img/customer_profile/' . (Auth::guard('web')->user()->profile_pic ?? 'default.png')) }}"
                                                                         alt="img">
@@ -103,7 +103,7 @@
                                                             </div>
                                                             <div class="media-body">
                                                                 <h4 class="author-name">
-                                                                    {{ $message->sender_id == Auth::guard('web')->user()->id ? 'You' : 'Vendor' }}
+                                                                    {{ $message->sender == 'customer' ? 'You' : 'Vendor' }}
                                                                 </h4>
                                                                 <span class="comments-date">
                                                                     {{ $message->created_at }}</span>
