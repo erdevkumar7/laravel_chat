@@ -50,9 +50,19 @@ class OrderController extends Controller
 
     public function viewOrderItem($order_itemsId)
     {
+        // $orderItem = OrderItem::where('id', $order_itemsId)
+        //     ->with('product')
+        //     ->with('order')
+        //     ->get();
+
         $orderItem = OrderItem::where('id', $order_itemsId)
-            ->with('product')
-            ->get();
+        ->with([
+            'product',        // Eager load the product details
+            'order.user'      // Eager load the order and its associated user
+        ])
+        ->firstOrFail();
         // dd($orderItem);
+        return view('front.customer.viewOrderItem', compact('orderItem'));
+
     }
 }

@@ -62,6 +62,7 @@
                                                         <th>Price</th>
                                                         <th>Quantity</th>
                                                         <th>Total</th>
+                                                        <th>Chat</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -85,6 +86,7 @@
                                                             <td>Rs.<span
                                                                     class="product-total-price">{{ $item->quantity * $item->product->price }}</span>
                                                             </td>
+                                                            <td><a href="{{route('customer.chat.get', $item->product->vendor_id)}}"><i class="fa fa-comments"></i></a></td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -107,20 +109,21 @@
                                         <table class="table">
                                             <thead>
                                                 <tr>
-                                                    <th></th>
+                                                    {{-- <th></th> --}}
                                                     <th></th>
                                                     <th>Product</th>
                                                     <th>Price</th>
                                                     <th>Quantity</th>
                                                     <th>Total</th>
+                                                    <th>Chat</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($order->order_items as $item)
                                                     <tr>
-                                                        <td><a
+                                                        {{-- <td><a
                                                                 href="{{ route('customer.viewOrderItem', $item->id) }}">{{ $item->id }}</a>
-                                                        </td>
+                                                        </td> --}}
                                                         <td><a
                                                                 href="{{ route('customer.getProductDetail', $item->product->id) }}"><img
                                                                     src="{{ asset('public/front_asset/img/product_img/' . ($item->product->product_image ?? 'default.png')) }}"
@@ -139,6 +142,7 @@
                                                         <td>Rs.<span
                                                                 class="product-total-price">{{ $item->quantity * $item->product->price }}</span>
                                                         </td>
+                                                        <td><a href="{{route('customer.chat.get', $item->product->vendor_id)}}"><i class="fa fa-comments"></i></a></td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
